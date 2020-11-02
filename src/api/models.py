@@ -65,7 +65,7 @@ class Questionare(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), unique=False, nullable=False)
     description = db.Column(db.String(120), unique=False, nullable=False)
-    score_total = db.Column(db.Integer, unique=False, nullable=False)
+    score_total = db.Column(db.Integer, unique=False, nullable=True)
     interview = db.relationship('Interview')
     question = db.relationship('Question')
 
@@ -83,8 +83,8 @@ class Questionare(db.Model):
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), unique=False, nullable=False)
-    score_min = db.Column(db.Integer, unique=False, nullable=False)
-    score_max = db.Column(db.Integer, unique=False, nullable=False)
+    score_min = db.Column(db.Integer, unique=False, nullable=True)
+    score_max = db.Column(db.Integer, unique=False, nullable=True)
     questionare_id = db.Column(db.Integer, db.ForeignKey('questionare.id'))
     option = db.relationship('Option')
 
