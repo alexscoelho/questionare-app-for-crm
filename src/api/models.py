@@ -44,7 +44,7 @@ class Interview(db.Model):
     starting_time = db.Column(db.DateTime)
     ending_time = db.Column(db.DateTime)
     agent_id = db.Column(db.Integer, db.ForeignKey('agent.id'))
-    questionare_id = db.Column(db.Integer, db.ForeignKey('questionare.id'))
+    questionnaire_id = db.Column(db.Integer, db.ForeignKey('questionnaire.id'))
     contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'))
     answer = db.relationship('Answer')
 
@@ -57,11 +57,11 @@ class Interview(db.Model):
             "starting_time": self.starting_time,
             "ending_time": self.ending_time,
             "agent_id": self.agent_id,
-            "questionare_id": self.questionare_id,
+            "questionnaire_id": self.questionnaire_id,
             "contact_id": self.contact_id,
         }
 
-class Questionare(db.Model):
+class Questionnaire(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), unique=False, nullable=False)
     description = db.Column(db.String(120), unique=False, nullable=False)
@@ -70,14 +70,14 @@ class Questionare(db.Model):
     question = db.relationship('Question')
 
     def __repr__(self):
-        return '<Questionare %r>' % self.id
+        return '<questionnaire %r>' % self.id
 
     def serialize(self):
         return {
             "id": self.id,
             "title": self.title,
             "description": self.description,
-            "score": self.score
+            "score_total": self.score_total
         }
     
 class Question(db.Model):
@@ -85,7 +85,7 @@ class Question(db.Model):
     title = db.Column(db.String(120), unique=False, nullable=False)
     score_min = db.Column(db.Integer, unique=False, nullable=True)
     score_max = db.Column(db.Integer, unique=False, nullable=True)
-    questionare_id = db.Column(db.Integer, db.ForeignKey('questionare.id'))
+    questionnaire_id = db.Column(db.Integer, db.ForeignKey('questionnaire.id'))
     option = db.relationship('Option')
 
     def __repr__(self):
@@ -96,7 +96,8 @@ class Question(db.Model):
             "id": self.id,
             "title": self.title,
             "score_min": self.score_min,
-            "score_max": self.score_max
+            "score_max": self.score_max,
+            'questionnaire_id': self.questionnaire_id
         }
 
 class Answer(db.Model):
@@ -112,6 +113,8 @@ class Answer(db.Model):
         return {
             "id": self.id,
             "comments": self.comments,
+            'interview_id': self.interview_id,
+            'option_id': self.option_id
         }
 
 class Option(db.Model):
@@ -128,5 +131,6 @@ class Option(db.Model):
         return {
             "id": self.id,
             "title": self.title,
-            "value": self.value
+            "value": self.value,
+            'question_id': self.question_id
         }

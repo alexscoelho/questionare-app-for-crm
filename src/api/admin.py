@@ -1,7 +1,7 @@
   
 import os
 from flask_admin import Admin
-from .models import db, Agent, Contact, Interview, Questionare, Question, Answer, Option
+from .models import db, Agent, Contact, Interview, Questionnaire, Question, Answer, Option
 from flask_admin.contrib.sqla import ModelView
 
 def setup_admin(app):
@@ -14,7 +14,7 @@ def setup_admin(app):
     admin.add_view(ModelView(Agent, db.session))
     admin.add_view(ModelView(Contact, db.session))
     admin.add_view(ModelView(Interview, db.session))
-    admin.add_view(ModelView(Questionare, db.session))
+    admin.add_view(ModelView(Questionnaire, db.session))
     admin.add_view(ModelView(Question, db.session))
     admin.add_view(ModelView(Answer, db.session))
     admin.add_view(ModelView(Option, db.session))
