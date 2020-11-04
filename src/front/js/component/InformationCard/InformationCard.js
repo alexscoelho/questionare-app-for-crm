@@ -1,19 +1,42 @@
 import React from "react";
 import "./InformationCard.scss";
 
-import { Card, Button } from "react-bootstrap/";
+import { Card, Button, Alert } from "react-bootstrap/";
 
 export const InformationCard = () => {
+	const contactInformation = {
+		firstName: "Pascual",
+		lastName: "Angulo",
+		email: "pascualangulo@gmail.com",
+		phone: "786333111",
+		city: "San Jose de Costa Rica"
+	};
+
 	return (
 		<Card style={{ width: "18rem" }} className="ml-auto">
 			<Card.Body>
-				<Card.Title>Card Title</Card.Title>
-				<Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
+				<Card.Title>Candidate Information</Card.Title>
+				{/* <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle> */}
 				<Card.Text>
-					Some quick example text to build on the card title and make up the bulk of the cards content.
+					<b>First Name:</b> {contactInformation.firstName}
 				</Card.Text>
-				<Card.Link href="#">Card Link</Card.Link>
-				<Card.Link href="#">Another Link</Card.Link>
+				<Card.Text>
+					<b>Last Name:</b> {contactInformation.lastName}
+				</Card.Text>
+				<Card.Text>
+					<b>Email:</b> {contactInformation.email}
+				</Card.Text>
+				<Card.Text>
+					<b>Phone:</b> {contactInformation.phone}
+				</Card.Text>
+				<Card.Text>
+					<b>City:</b> {contactInformation.city}
+				</Card.Text>
+				<Alert variant="light" className="call-status">
+					2 days ago missed call <br />
+					Se le llamo pero no contesto
+				</Alert>
+				<Button>Add new note</Button>
 			</Card.Body>
 		</Card>
 	);
