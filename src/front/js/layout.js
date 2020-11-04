@@ -11,6 +11,8 @@ import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 
 import { Login } from "./component/Login/Login.js";
+import { Dashboard } from "./component/Dashboard/Dashboard.js";
+import { CommunicationStatus } from "./component/CommunicationStatus/CommunicationStatus.js";
 
 //create your first component
 const Layout = () => {
@@ -26,6 +28,12 @@ const Layout = () => {
 					<Switch>
 						<Route exact path="/">
 							<Login />
+						</Route>
+						<Route exact path="/dashboard">
+							<Dashboard />
+						</Route>
+						<Route exact path="/communicationstatus">
+							<CommunicationStatus />
 						</Route>
 						<Route exact path="/demo">
 							<Demo />
