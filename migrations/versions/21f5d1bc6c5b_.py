@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 135cc1437871
+Revision ID: 21f5d1bc6c5b
 Revises: 
-Create Date: 2020-11-03 01:31:25.396541
+Create Date: 2020-11-03 16:27:06.307201
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '135cc1437871'
+revision = '21f5d1bc6c5b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -44,9 +44,9 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('starting_time', sa.DateTime(), nullable=True),
     sa.Column('ending_time', sa.DateTime(), nullable=True),
-    sa.Column('agent_id', sa.Integer(), nullable=True),
-    sa.Column('questionnaire_id', sa.Integer(), nullable=True),
-    sa.Column('contact_id', sa.Integer(), nullable=True),
+    sa.Column('agent_id', sa.Integer(), nullable=False),
+    sa.Column('questionnaire_id', sa.Integer(), nullable=False),
+    sa.Column('contact_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['agent_id'], ['agent.id'], ),
     sa.ForeignKeyConstraint(['contact_id'], ['contact.id'], ),
     sa.ForeignKeyConstraint(['questionnaire_id'], ['questionnaire.id'], ),
@@ -57,7 +57,7 @@ def upgrade():
     sa.Column('title', sa.String(length=120), nullable=False),
     sa.Column('score_min', sa.Integer(), nullable=True),
     sa.Column('score_max', sa.Integer(), nullable=True),
-    sa.Column('questionnaire_id', sa.Integer(), nullable=True),
+    sa.Column('questionnaire_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['questionnaire_id'], ['questionnaire.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -65,15 +65,15 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=120), nullable=False),
     sa.Column('value', sa.String(length=120), nullable=False),
-    sa.Column('question_id', sa.Integer(), nullable=True),
+    sa.Column('question_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['question_id'], ['question.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('answer',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('comments', sa.String(length=120), nullable=False),
-    sa.Column('interview_id', sa.Integer(), nullable=True),
-    sa.Column('option_id', sa.Integer(), nullable=True),
+    sa.Column('interview_id', sa.Integer(), nullable=False),
+    sa.Column('option_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['interview_id'], ['interview.id'], ),
     sa.ForeignKeyConstraint(['option_id'], ['option.id'], ),
     sa.PrimaryKeyConstraint('id')

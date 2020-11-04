@@ -19,7 +19,9 @@ def handle_hello():
 
 @api.route('/questionnaire/<int:id>', methods=['GET'])
 def get_questionnaire(id):
+
     questionnaire1 = Questionnaire.query.get(id)
+    
     if questionnaire1 is None:
         raise APIException('questionnaire not found', status_code=404)
     return jsonify(questionnaire1.serialize()), 200
