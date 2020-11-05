@@ -13,6 +13,8 @@ import { Footer } from "./component/footer";
 import { Login } from "./component/Login/Login.js";
 import { Dashboard } from "./component/Dashboard/Dashboard.js";
 import { CommunicationStatus } from "./component/CommunicationStatus/CommunicationStatus.js";
+import { InterviewCall } from "./component/InterviewCall/InterviewCall.js";
+import { CandidateList } from "./component/CandidateList/CandidateList.js";
 
 //create your first component
 const Layout = () => {
@@ -35,6 +37,13 @@ const Layout = () => {
 						<Route exact path="/communicationstatus">
 							<CommunicationStatus />
 						</Route>
+						<Route exact path="/interviewcall">
+							<InterviewCall />
+							<Footer />
+						</Route>
+						<Route exact path="/candidatelist">
+							<CandidateList />
+						</Route>
 						<Route exact path="/demo">
 							<Demo />
 						</Route>
@@ -45,7 +54,6 @@ const Layout = () => {
 							<h1>Not found!</h1>
 						</Route>
 					</Switch>
-					<Footer />
 				</ScrollToTop>
 			</BrowserRouter>
 		</div>

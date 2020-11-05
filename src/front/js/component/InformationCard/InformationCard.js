@@ -13,7 +13,7 @@ export const InformationCard = () => {
 	};
 
 	return (
-		<Card style={{ width: "18rem" }} className="ml-auto">
+		<Card style={{ width: "22rem" }} className="ml-auto">
 			<Card.Body>
 				<Card.Title>Candidate Information</Card.Title>
 				{/* <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle> */}
@@ -36,7 +36,7 @@ export const InformationCard = () => {
 					2 days ago missed call <br />
 					Se le llamo pero no contesto
 				</Alert>
-				<Button>Add new note</Button>
+				<Card.Link href="#">Add new note</Card.Link>
 			</Card.Body>
 		</Card>
 	);

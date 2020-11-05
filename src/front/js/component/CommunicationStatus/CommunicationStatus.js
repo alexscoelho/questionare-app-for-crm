@@ -2,7 +2,6 @@ import React from "react";
 import "./CommunicationStatus.scss";
 
 import { Container, Col, Row, Card, Button, Form } from "react-bootstrap/";
-
 import { InformationCard } from "../InformationCard/InformationCard.js";
 
 export const CommunicationStatus = () => {

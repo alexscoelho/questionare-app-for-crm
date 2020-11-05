@@ -13,6 +13,48 @@ const getState = ({ getStore, getActions, setStore }) => {
 					background: "white",
 					initial: "white"
 				}
+			],
+			questions: [
+				{
+					answer: [],
+					id: 1,
+					options: [
+						{
+							id: 6,
+							question_id: 1,
+							title: "N/A",
+							value: "0"
+						}
+					],
+					questionnaire_id: 1,
+					title: "1.  ¿Cómo se enteró de este proyecto?"
+				},
+				{
+					answer: [],
+					id: 2,
+					options: [
+						{
+							id: 3,
+							question_id: 2,
+							title: "Internet y computador compartido",
+							value: "6"
+						},
+						{
+							id: 4,
+							question_id: 2,
+							title: "Internet y compotador propio",
+							value: "7"
+						},
+						{
+							id: 5,
+							question_id: 2,
+							title: "no internet",
+							value: "0"
+						}
+					],
+					questionnaire_id: 1,
+					title: "2.    Este es un curso virtual. ¿Tiene actualmente una computadora e internet disponible?"
+				}
 			]
 		},
 		actions: {

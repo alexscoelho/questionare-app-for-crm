@@ -1,10 +1,19 @@
 import React, { Component } from "react";
 
-export const Footer = () => (
-	<footer className="footer mt-auto py-3 text-center">
-		<p>
-			Made with <i className="fa fa-heart text-danger" /> by{" "}
-			<a href="http://www.4geeksacademy.com">4Geeks Academy</a>
-		</p>
-	</footer>
-);
+import { Button, Navbar } from "react-bootstrap/";
+
+export const Footer = () => {
+	return (
+		<Navbar fixed="bottom" className="justify-content-end">
+			<Button style={{ marginRight: 5 }} variant="secondary">
+				Discard
+			</Button>
+			<Button style={{ marginRight: 5 }} variant="secondary">
+				Save as draft
+			</Button>
+			<Button style={{ marginRight: 5 }} variant="success">
+				Submit Interview
+			</Button>
+		</Navbar>
+	);
+};
