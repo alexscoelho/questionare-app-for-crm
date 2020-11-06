@@ -15,48 +15,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			],
 			candidates: [],
-			questions: [
-				{
-					answer: [],
-					id: 1,
-					options: [
-						{
-							id: 6,
-							question_id: 1,
-							title: "N/A",
-							value: "0"
-						}
-					],
-					questionnaire_id: 1,
-					title: "1.  ¿Cómo se enteró de este proyecto?"
-				},
-				{
-					answer: [],
-					id: 2,
-					options: [
-						{
-							id: 3,
-							question_id: 2,
-							title: "Internet y computador compartido",
-							value: "6"
-						},
-						{
-							id: 4,
-							question_id: 2,
-							title: "Internet y compotador propio",
-							value: "7"
-						},
-						{
-							id: 5,
-							question_id: 2,
-							title: "no internet",
-							value: "0"
-						}
-					],
-					questionnaire_id: 1,
-					title: "2.    Este es un curso virtual. ¿Tiene actualmente una computadora e internet disponible?"
-				}
-			]
+			questionnaire: []
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -69,6 +28,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 				fetch(`${process.env.BACKEND_URL}/api/contacts?sort=${sort}`)
 					.then(response => response.json())
 					.then(data => setStore({ candidates: data }))
+					.catch(error => console.log("Error loading contacs from backend", error));
+			},
+
+			getQuestionnaire: () => {
+				fetch(`${process.env.BACKEND_URL}/api/questionnaire/1`)
+					.then(response => response.json())
+					.then(data => setStore({ questionnaire: data.questions }))
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
 

@@ -27,6 +27,8 @@ class Contact(db.Model):
     approved_status = db.Column(db.Enum('admited','discarted','postponed','dropped'))
     communication_status = db.Column(db.Enum('no answer', 'answered but not available', 'not interested any more'))
     interview = db.relationship('Interview', backref='contact', lazy=True)
+    
+    
 
     def __repr__(self):
         return '<Contact %r>' % self.id
@@ -37,7 +39,7 @@ class Contact(db.Model):
             "first_name": self.first_name,
             "last_name": self.last_name,
             "interview_status": self.interview_status,
-            "approved_status": self.approved_status
+            "approved_status": self.approved_status,
         }
 
 class Interview(db.Model):
@@ -48,6 +50,7 @@ class Interview(db.Model):
     questionnaire_id = db.Column(db.Integer, db.ForeignKey('questionnaire.id'), nullable=False )
     contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'), nullable=False)
     answer = db.relationship('Answer', backref='interview', lazy=True)
+    status = db.Column(db.String(80), unique=False, nullable=False)
 
     def __repr__(self):
         return '<Interview %r>' % self.id
@@ -60,6 +63,7 @@ class Interview(db.Model):
             "agent_id": self.agent_id,
             "questionnaire_id": self.questionnaire_id,
             "contact_id": self.contact_id,
+            "status": self.status
         }
 
 class Questionnaire(db.Model):
@@ -88,7 +92,6 @@ class Question(db.Model):
     questionnaire_id = db.Column(db.Integer, db.ForeignKey('questionnaire.id'), nullable=False)
     options = db.relationship('Option',backref='question', lazy=True)
     answer = db.relationship('Answer',backref='question', lazy=True)
-
 
     def __repr__(self):
         return '<Question %r>' % self.id

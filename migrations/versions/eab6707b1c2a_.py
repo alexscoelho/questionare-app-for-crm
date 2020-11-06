@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 21f5d1bc6c5b
+Revision ID: eab6707b1c2a
 Revises: 
-Create Date: 2020-11-03 16:27:06.307201
+Create Date: 2020-11-06 23:24:02.242347
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '21f5d1bc6c5b'
+revision = 'eab6707b1c2a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,7 +30,8 @@ def upgrade():
     sa.Column('first_name', sa.String(length=80), nullable=False),
     sa.Column('last_name', sa.String(length=80), nullable=False),
     sa.Column('interview_status', sa.Enum('pending', 'interviewed'), nullable=True),
-    sa.Column('approved_status', sa.Enum('admited', 'discarted', 'postponed'), nullable=True),
+    sa.Column('approved_status', sa.Enum('admited', 'discarted', 'postponed', 'dropped'), nullable=True),
+    sa.Column('communication_status', sa.Enum('no answer', 'answered but not available', 'not interested any more'), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('questionnaire',
@@ -47,6 +48,7 @@ def upgrade():
     sa.Column('agent_id', sa.Integer(), nullable=False),
     sa.Column('questionnaire_id', sa.Integer(), nullable=False),
     sa.Column('contact_id', sa.Integer(), nullable=False),
+    sa.Column('status', sa.String(length=80), nullable=False),
     sa.ForeignKeyConstraint(['agent_id'], ['agent.id'], ),
     sa.ForeignKeyConstraint(['contact_id'], ['contact.id'], ),
     sa.ForeignKeyConstraint(['questionnaire_id'], ['questionnaire.id'], ),
@@ -55,8 +57,6 @@ def upgrade():
     op.create_table('question',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=120), nullable=False),
-    sa.Column('score_min', sa.Integer(), nullable=True),
-    sa.Column('score_max', sa.Integer(), nullable=True),
     sa.Column('questionnaire_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['questionnaire_id'], ['questionnaire.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -74,8 +74,10 @@ def upgrade():
     sa.Column('comments', sa.String(length=120), nullable=False),
     sa.Column('interview_id', sa.Integer(), nullable=False),
     sa.Column('option_id', sa.Integer(), nullable=False),
+    sa.Column('question_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['interview_id'], ['interview.id'], ),
     sa.ForeignKeyConstraint(['option_id'], ['option.id'], ),
+    sa.ForeignKeyConstraint(['question_id'], ['question.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

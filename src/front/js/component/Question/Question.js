@@ -7,7 +7,9 @@ import { Container, Col, Row, Card, Button, Form } from "react-bootstrap/";
 export const Question = () => {
 	const { store, actions } = useContext(Context);
 
-	return store.questions.map((question, index) => {
+	console.log(store.questionnaire);
+
+	return store.questionnaire.map((question, index) => {
 		return (
 			<Form.Group key={index}>
 				<Form.Label>{question.title}</Form.Label>

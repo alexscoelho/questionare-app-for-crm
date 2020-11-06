@@ -4,6 +4,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, Agent, Contact, Interview, Questionnaire, Question, Answer, Option
 from api.utils import generate_sitemap, APIException
+from datetime import datetime
 
 api = Blueprint('api', __name__)
 
@@ -44,3 +45,21 @@ def get_contacts():
         raise APIException('contacs not found', status_code=404)
     all_contacts = list(map(lambda x: x.serialize(), contacts))
     return jsonify(all_contacts), 200
+
+@api.route('/contact/<int:id>/interview/agent/<int:agent_id>/questionnaire/<int:questionnaire_id>', methods=['POST','PUT'])
+def handle_interview(id,agent_id,questionnaire_id):
+    body = request.get_json()
+
+    if request.method == 'POST':
+        interview1 = Interview()
+        interview1.agent_id = agent_id
+        interview1.questionnaire_id = questionnaire_id
+        interview1.contact_id = id
+        interview1.status = 'DRAFT'
+        interview1.starting_time = datetime.now()
+        db.session.add(interview1)
+        db.session.commit()
+        return "ok", 200
+
+    
+
