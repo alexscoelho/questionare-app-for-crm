@@ -14,6 +14,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					initial: "white"
 				}
 			],
+			rowData: null,
 			questions: [
 				{
 					answer: [],
@@ -61,6 +62,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
+			},
+
+			getContacts: () => {
+				fetch(process.env.BACKEND_URL + "/api/contacts")
+					.then(response => response.json())
+					.then(data => setStore({ rowData: data }))
+					.catch(error => console.log("Error loading contacs from backend", error));
 			},
 
 			getMessage: () => {

@@ -25,3 +25,13 @@ def get_questionnaire(id):
     if questionnaire1 is None:
         raise APIException('questionnaire not found', status_code=404)
     return jsonify(questionnaire1.serialize()), 200
+
+@api.route('/contacts', methods=['GET'])
+def get_contacts():
+
+    contacts = Contact.query.all()
+
+    if contacts is None:
+        raise APIException('contacs not found', status_code=404)
+    all_contacts = list(map(lambda x: x.serialize(), contacts))
+    return jsonify(all_contacts), 200
