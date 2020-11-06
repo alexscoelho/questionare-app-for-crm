@@ -1,37 +1,22 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "./CandidateList.scss";
 import { Context } from "../../store/appContext";
 
 import { SmartTable, TableRow } from "../SmartTable/SmartTable";
 import { Container, Row, Col, Button } from "react-bootstrap/";
 
-const candidates = [
-	{ id: 1, firstName: "Bob", lastName: "Dylan", checked: false },
-	{ id: 2, firstName: "Sam", lastName: "Dylan", checked: false },
-	{ id: 3, firstName: "Cyndy", lastName: "Dylan", checked: false },
-	{ id: 4, firstName: "Delta", lastName: "Dylan", checked: false }
-];
+// const candidates = [
+// 	{ id: 1, firstName: "Bob", lastName: "Dylan", checked: false },
+// 	{ id: 2, firstName: "Sam", lastName: "Dylan", checked: false },
+// 	{ id: 3, firstName: "Cyndy", lastName: "Dylan", checked: false },
+// 	{ id: 4, firstName: "Delta", lastName: "Dylan", checked: false }
+// ];
 
 export const CandidateList = () => {
 	const { store, actions } = useContext(Context);
-	const [contacts, setContacts] = useState(candidates);
 
 	const handleClick = () => {
-		alert(`There ${contacts.filter(c => c.checked).length} contacts checked`);
-	};
-
-	const handleSort = () => {
-		setContacts(
-			contacts.sort((a, b) => {
-				if (a.firstName > b.firstName) {
-					return 1;
-				}
-				if (a.firstName < b.firstName) {
-					return -1;
-				}
-				return 0;
-			})
-		);
+		alert(`There ${store.candidates.filter(c => c.checked).length} store.candidates checked`);
 	};
 
 	return (
@@ -42,14 +27,14 @@ export const CandidateList = () => {
 					<Button style={{ marginBotton: 5 }} variant="light" onClick={handleClick}>
 						Actions
 					</Button>
-					<SmartTable handleSort={handleSort}>
-						{contacts.map((c, index) => (
+					<SmartTable handleSort={key => actions.getContacts({ sort: key })}>
+						{store.candidates.map((c, index) => (
 							<TableRow
 								key={index}
 								contact={c}
 								onToggle={value =>
-									setContacts(
-										contacts.map(contact => {
+									setstore.candidates(
+										store.candidates.map(contact => {
 											if (c.id === contact.id) contact.checked = value;
 											return contact;
 										})

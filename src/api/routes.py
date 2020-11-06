@@ -28,8 +28,17 @@ def get_questionnaire(id):
 
 @api.route('/contacts', methods=['GET'])
 def get_contacts():
+    contacts = Contact.query
 
-    contacts = Contact.query.all()
+    # score = request.args.get('score')
+    # if score is not None and score != "":
+    #     contacts = contacts.filter_by(score=score)
+
+    sort = request.args.get('sort')
+    if sort is not None and sort != "" and sort != "undefined":
+        contacts = contacts.order_by(sort)
+    contacts = contacts.all()
+    
 
     if contacts is None:
         raise APIException('contacs not found', status_code=404)

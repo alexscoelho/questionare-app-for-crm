@@ -14,7 +14,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					initial: "white"
 				}
 			],
-			rowData: null,
+			candidates: [],
 			questions: [
 				{
 					answer: [],
@@ -64,10 +64,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().changeColor(0, "green");
 			},
 
-			getContacts: () => {
-				fetch(process.env.BACKEND_URL + "/api/contacts")
+			getContacts: (opt = {}) => {
+				const { sort = "", score = "" } = opt;
+				fetch(`${process.env.BACKEND_URL}/api/contacts?sort=${sort}`)
 					.then(response => response.json())
-					.then(data => setStore({ rowData: data }))
+					.then(data => setStore({ candidates: data }))
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
 

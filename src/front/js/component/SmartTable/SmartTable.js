@@ -8,12 +8,12 @@ export const TableRow = ({ contact, onToggle }) => {
 			<td scope="row">
 				<input type="checkbox" onClick={() => onToggle(!contact.checked)} value={contact.checked} />
 			</td>
-			<td>{contact.firstName}</td>
-			<td>{contact.lastName}</td>
-			<td>{contact.lastName}</td>
-			<td>{contact.lastName}</td>
-			<td>{contact.lastName}</td>
-			<td>{contact.lastName}</td>
+			<td>{contact.first_name}</td>
+			<td>{contact.interview_status}</td>
+			<td>{contact.approved_status}</td>
+			<td>{contact.first_name}</td>
+			<td>{contact.first_name}</td>
+			<td>{contact.first_name}</td>
 			<td>
 				<a href="#">
 					details <i className="far fa-arrow-alt-circle-right" />
@@ -24,15 +24,12 @@ export const TableRow = ({ contact, onToggle }) => {
 };
 
 export const SmartTable = ({ children, handleSort }) => {
-	const sortContacts = () => {
-		handleSort();
-	};
 	return (
 		<table>
 			<tr>
 				<th />
 				<th>
-					Student <i className="fas fa-sort" onClick={sortContacts} />
+					Student <i className="fas fa-sort" onClick={() => handleSort("first_name")} />
 				</th>
 				<th>Interview</th>
 				<th>Aproved</th>
