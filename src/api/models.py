@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from datetime import datetime
 
+
 db = SQLAlchemy()
 
 class Agent(db.Model):
@@ -51,10 +52,12 @@ class Interview(db.Model):
     contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'), nullable=False)
     answer = db.relationship('Answer', backref='interview', lazy=True)
     status = db.Column(db.String(80), unique=False, nullable=False)
+    questions = db.relationship('Question', backref='interview', lazy=True)
+    options = db.relationship('Option', backref='interview', lazy=True)
 
     def __repr__(self):
         return '<Interview %r>' % self.id
-
+    
     def serialize(self):
         return {
             "id": self.id,
@@ -63,7 +66,10 @@ class Interview(db.Model):
             "agent_id": self.agent_id,
             "questionnaire_id": self.questionnaire_id,
             "contact_id": self.contact_id,
-            "status": self.status
+            "status": self.status,
+            # "questions": [q.serialize() for q in self.questions],
+            "answer": [a.serialize() for a in self.answer],
+            "options": [o.serialize() for o in self.options]
         }
 
 class Questionnaire(db.Model):
@@ -90,6 +96,7 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), unique=False, nullable=False)
     questionnaire_id = db.Column(db.Integer, db.ForeignKey('questionnaire.id'), nullable=False)
+    interview_id = db.Column(db.Integer, db.ForeignKey('interview.id'), nullable=True)
     options = db.relationship('Option',backref='question', lazy=True)
     answer = db.relationship('Answer',backref='question', lazy=True)
 
@@ -102,7 +109,7 @@ class Question(db.Model):
             "title": self.title,
             "questionnaire_id": self.questionnaire_id,
             "options": [o.serialize() for o in self.options],
-            "answer": self.answer
+            "answer": [a.serialize() for a in self.answer]
         }
 
 class Answer(db.Model):
@@ -120,7 +127,8 @@ class Answer(db.Model):
             "id": self.id,
             "comments": self.comments,
             'interview_id': self.interview_id,
-            'option_id': self.option_id
+            'option_id': self.option_id,
+            'question_id': self.question_id
         }
 
 class Option(db.Model):
@@ -129,6 +137,7 @@ class Option(db.Model):
     value = db.Column(db.String(120), unique=False, nullable=False)
     answer = db.relationship('Answer', backref='option', lazy=True)
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)
+    interview_id = db.Column(db.Integer, db.ForeignKey('interview.id'), nullable=True)
 
     def __repr__(self):
         return '<Option %r>' % self.id

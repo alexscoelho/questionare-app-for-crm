@@ -46,12 +46,13 @@ def get_contacts():
     all_contacts = list(map(lambda x: x.serialize(), contacts))
     return jsonify(all_contacts), 200
 
-@api.route('/contact/<int:id>/interview/agent/<int:agent_id>/questionnaire/<int:questionnaire_id>', methods=['POST','PUT'])
+@api.route('/contact/<int:id>/interview/agent/<int:agent_id>/questionnaire/<int:questionnaire_id>', methods=['POST', 'PUT'])
 def handle_interview(id,agent_id,questionnaire_id):
     body = request.get_json()
-
+    interview1 = Interview()
+    
     if request.method == 'POST':
-        interview1 = Interview()
+        
         interview1.agent_id = agent_id
         interview1.questionnaire_id = questionnaire_id
         interview1.contact_id = id
@@ -60,6 +61,42 @@ def handle_interview(id,agent_id,questionnaire_id):
         db.session.add(interview1)
         db.session.commit()
         return "ok", 200
+    
+    if request.method == 'PUT':
+        interview1.status = body['status']
+        interview1.ending_time = datetime.now()
+        return "ok", 200
+        
+@api.route('/interview/answer', methods=['POST', 'GET']) 
+def create_answer():
+    body = request.get_json()
+
+    answer1 = Answer(comments=body['comments'], interview_id=body['interview_id'], option_id=body['interview_id'], question_id=body['question_id'])
+    db.session.add(answer1)
+    db.session.commit()
+    return "ok", 200
+
+@api.route('/interview/answer/<int:answer_id>', methods=['PUT', 'GET']) 
+def modify_answer(answer_id):
+    body = request.get_json()
+    answer1 = Answer.query.get(answer_id)
+    answer1.comments = body['comments']
+    answer1.interview_id = body['interview_id']
+    answer1.option_id  = body['option_id']
+    db.session.commit()
+    return "ok", 200
+
+@api.route('/interviews', methods=['GET'])
+def get_interviews():
+    interviews = Interview.query.all()
+    all_interviews = list(map(lambda x: x.serialize(), interviews))
+    return jsonify(all_interviews), 200
+
+
+    
+
+    
+
 
     
 
