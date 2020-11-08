@@ -1,28 +1,15 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			],
 			candidates: [],
-			questionnaire: []
+			questionnaire: null,
+			interview: null,
+			currentContact: null,
+			agent: { id: 1 },
+			questionnaireId: 1
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-
 			getContacts: (opt = {}) => {
 				const { sort = "", score = "" } = opt;
 				fetch(`${process.env.BACKEND_URL}/api/contacts?sort=${sort}`)
@@ -31,33 +18,44 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
 
-			getQuestionnaire: () => {
-				fetch(`${process.env.BACKEND_URL}/api/questionnaire/1`)
+			getQuestionnaire: id => {
+				fetch(`${process.env.BACKEND_URL}/api/questionnaire/${id}`)
 					.then(response => response.json())
 					.then(data => setStore({ questionnaire: data.questions }))
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
-
-			getMessage: () => {
-				// fetching data from the backend
-				fetch(process.env.BACKEND_URL + "/api/hello")
-					.then(resp => resp.json())
-					.then(data => setStore({ message: data.message }))
-					.catch(error => console.log("Error loading message from backend", error));
+			getContact: id => {
+				fetch(`${process.env.BACKEND_URL}/api/contact/${id}`)
+					.then(response => response.json())
+					.then(data => setStore({ currentContact: data }))
+					.catch(error => console.log("Error loading contacs from backend", error));
 			},
-			changeColor: (index, color) => {
-				//get the store
+			redirectNextInterview: history => {
 				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
+				fetch(`${process.env.BACKEND_URL}/api/agent/${store.agent.id}/contact/next`)
+					.then(response => response.json())
+					.then(data => {
+						setStore({ currentContact: data });
+						history.push(`/contact/${data.id}`);
+					})
+					.catch(error => console.log("Error loading contacs from backend", error));
+			},
+			startInterview: history => {
+				const store = getStore();
+				fetch(`${process.env.BACKEND_URL}/api/contact/${store.currentContact.id}/interview`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						questionnaire_id: store.questionnaireId,
+						agent_id: store.agent.id
+					})
+				})
+					.then(response => response.json())
+					.then(data => {
+						setStore({ questionnaire: data.questionnaire, interview: data.interview });
+						history.push("/interview/" + data.interview.id);
+					})
+					.catch(error => console.log("Error loading contacs from backend", error));
 			}
 		}
 	};

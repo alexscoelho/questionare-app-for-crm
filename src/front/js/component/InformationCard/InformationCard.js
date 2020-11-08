@@ -3,7 +3,7 @@ import "./InformationCard.scss";
 
 import { Card, Button, Alert } from "react-bootstrap/";
 
-export const InformationCard = () => {
+export const InformationCard = p => {
 	const contactInformation = {
 		firstName: "Pascual",
 		lastName: "Angulo",
@@ -11,14 +11,15 @@ export const InformationCard = () => {
 		phone: "786333111",
 		city: "San Jose de Costa Rica"
 	};
-
+	console.log("contact", p);
+	if (!p.contact) return "loading...";
 	return (
 		<Card style={{ width: "22rem" }} className="ml-auto">
 			<Card.Body>
 				<Card.Title>Candidate Information</Card.Title>
 				{/* <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle> */}
 				<Card.Text>
-					<b>First Name:</b> {contactInformation.firstName}
+					<b>First Name:</b> {p.contact.first_name}
 				</Card.Text>
 				<Card.Text>
 					<b>Last Name:</b> {contactInformation.lastName}

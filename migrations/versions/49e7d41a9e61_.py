@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: eab6707b1c2a
+Revision ID: 49e7d41a9e61
 Revises: 
-Create Date: 2020-11-06 23:24:02.242347
+Create Date: 2020-11-08 01:50:04.432753
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'eab6707b1c2a'
+revision = '49e7d41a9e61'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -38,7 +38,6 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=120), nullable=False),
     sa.Column('description', sa.String(length=120), nullable=False),
-    sa.Column('score_total', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('interview',
@@ -49,6 +48,7 @@ def upgrade():
     sa.Column('questionnaire_id', sa.Integer(), nullable=False),
     sa.Column('contact_id', sa.Integer(), nullable=False),
     sa.Column('status', sa.String(length=80), nullable=False),
+    sa.Column('score_total', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['agent_id'], ['agent.id'], ),
     sa.ForeignKeyConstraint(['contact_id'], ['contact.id'], ),
     sa.ForeignKeyConstraint(['questionnaire_id'], ['questionnaire.id'], ),
@@ -58,13 +58,15 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=120), nullable=False),
     sa.Column('questionnaire_id', sa.Integer(), nullable=False),
+    sa.Column('interview_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['interview_id'], ['interview.id'], ),
     sa.ForeignKeyConstraint(['questionnaire_id'], ['questionnaire.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('option',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=120), nullable=False),
-    sa.Column('value', sa.String(length=120), nullable=False),
+    sa.Column('value', sa.Integer(), nullable=False),
     sa.Column('question_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['question_id'], ['question.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -74,10 +76,9 @@ def upgrade():
     sa.Column('comments', sa.String(length=120), nullable=False),
     sa.Column('interview_id', sa.Integer(), nullable=False),
     sa.Column('option_id', sa.Integer(), nullable=False),
-    sa.Column('question_id', sa.Integer(), nullable=False),
+    sa.Column('value', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['interview_id'], ['interview.id'], ),
     sa.ForeignKeyConstraint(['option_id'], ['option.id'], ),
-    sa.ForeignKeyConstraint(['question_id'], ['question.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

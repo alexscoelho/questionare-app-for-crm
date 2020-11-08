@@ -9,7 +9,7 @@ export const Question = () => {
 
 	console.log(store.questionnaire);
 
-	return store.questionnaire.map((question, index) => {
+	return store.questionnaire.questions.map((question, index) => {
 		return (
 			<Form.Group key={index}>
 				<Form.Label>{question.title}</Form.Label>
