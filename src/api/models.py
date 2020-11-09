@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 
 from datetime import datetime
+import enum
 
 
 db = SQLAlchemy()
@@ -26,9 +27,9 @@ class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(80), unique=False, nullable=False)
     last_name = db.Column(db.String(80), unique=False, nullable=False)
-    interview_status = db.Column(db.Enum('pending','interviewed'), default="pending")
-    approved_status = db.Column(db.Enum('admited','discarted','postponed','dropped'))
-    communication_status = db.Column(db.Enum('no_answer', 'no_available', 'no_interested'))
+    interview_status = db.Column(db.String(80), unique=False, nullable=False, default="pending")
+    approved_status = db.Column(db.String(80), unique=False, nullable=True)
+    communication_status = db.Column(db.String(80), unique=False, nullable=True)
     interview = db.relationship('Interview', backref='contact', lazy=True)
     activities = db.relationship('Activity', backref='contact', lazy=True)
     contacted_at = db.Column(db.DateTime, nullable=True, default=None)
@@ -47,8 +48,10 @@ class Contact(db.Model):
             "last_name": self.last_name,
             "interview_status": self.interview_status,
             "approved_status": self.approved_status,
-            "activities": [a.serialize() for a in self.activities]
+            "activities": [a.serialize() for a in self.activities],
+            "communication_status": self.communication_status
         }
+
 
 class Activity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -111,6 +114,7 @@ class Interview(db.Model):
             'questionnaire': questionnaire.serialize(),
             'answers': [a.serialize() for a in self.answers]
         }
+
 
 class Questionnaire(db.Model):
     id = db.Column(db.Integer, primary_key=True)

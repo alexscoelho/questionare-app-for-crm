@@ -30,6 +30,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then(data => setStore({ currentContact: data }))
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
+			updateContact: (id, communicationStatus) => {
+				fetch(`${process.env.BACKEND_URL}/api/contact/${id}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(communicationStatus)
+				})
+					.then(response => response.json())
+					.then(data => console.log(data))
+					.catch(error => console.log("Error loading contacs from backend", error));
+			},
 			redirectNextInterview: history => {
 				const store = getStore();
 				fetch(`${process.env.BACKEND_URL}/api/agent/${store.agent.id}/contact/next`)

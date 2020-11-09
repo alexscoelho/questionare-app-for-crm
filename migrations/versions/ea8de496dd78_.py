@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 49e7d41a9e61
+Revision ID: ea8de496dd78
 Revises: 
-Create Date: 2020-11-08 01:50:04.432753
+Create Date: 2020-11-09 16:15:18.207454
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '49e7d41a9e61'
+revision = 'ea8de496dd78'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -25,19 +25,33 @@ def upgrade():
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
-    op.create_table('contact',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('first_name', sa.String(length=80), nullable=False),
-    sa.Column('last_name', sa.String(length=80), nullable=False),
-    sa.Column('interview_status', sa.Enum('pending', 'interviewed'), nullable=True),
-    sa.Column('approved_status', sa.Enum('admited', 'discarted', 'postponed', 'dropped'), nullable=True),
-    sa.Column('communication_status', sa.Enum('no answer', 'answered but not available', 'not interested any more'), nullable=True),
-    sa.PrimaryKeyConstraint('id')
-    )
     op.create_table('questionnaire',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=120), nullable=False),
     sa.Column('description', sa.String(length=120), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('contact',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('first_name', sa.String(length=80), nullable=False),
+    sa.Column('last_name', sa.String(length=80), nullable=False),
+    sa.Column('interview_status', sa.String(length=80), nullable=False),
+    sa.Column('approved_status', sa.String(length=80), nullable=True),
+    sa.Column('communication_status', sa.String(length=80), nullable=True),
+    sa.Column('contacted_at', sa.DateTime(), nullable=True),
+    sa.Column('contact_attemps', sa.Integer(), nullable=True),
+    sa.Column('agent_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['agent_id'], ['agent.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('activity',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('details', sa.String(length=350), nullable=False),
+    sa.Column('label', sa.String(length=100), nullable=True),
+    sa.Column('activity_type', sa.Enum('note', 'event'), nullable=True),
+    sa.Column('contact_id', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['contact_id'], ['contact.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('interview',
@@ -90,7 +104,8 @@ def downgrade():
     op.drop_table('option')
     op.drop_table('question')
     op.drop_table('interview')
-    op.drop_table('questionnaire')
+    op.drop_table('activity')
     op.drop_table('contact')
+    op.drop_table('questionnaire')
     op.drop_table('agent')
     # ### end Alembic commands ###

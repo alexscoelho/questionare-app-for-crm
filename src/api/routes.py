@@ -177,6 +177,41 @@ def get_interview(interview_id):
         raise APIException('No interview with that id')
     return interview1.serialize_big(), 200
 
+@api.route('/contact/<int:contact_id>', methods=['GET', 'PUT'])
+def get_single_contact(contact_id):
+    body = request.get_json()
+    contact1 = Contact.query.get(contact_id)
+
+    if request.method == 'GET':
+        if contact1 is None:
+            raise APIException('No contact with that id')
+        return contact1.serialize(), 200
+    
+    if request.method == 'PUT':
+        if contact1 is None:
+            raise APIException('No contact with that id')
+        if "first_name" in body:
+            contact1.first_name = body['first_name']
+        if "last_name" in body:
+            contact1.last_name = body['last_name']
+        if "interview_status" in body:
+            contact1.interview_status = body['interview_status']
+        if "approved_status" in body:    
+            contact1.approved_status = body['approved_status']
+        if "communication_status" in body: 
+            contact1.communication_status = body['communication_status']
+        if "contacted_at" in body: 
+            contact1.contacted_at = body['contacted_at']
+        if "contact_attemps" in body: 
+            contact1.contact_attemps = body['contact_attemps']
+        if "agent_id" in body: 
+            contact1.agent_id = body['agent_id']
+        db.session.commit() 
+
+        new_contact_activity(contact_id,"contact modified")
+        return contact1.serialize(), 200
+
+
 
 
 

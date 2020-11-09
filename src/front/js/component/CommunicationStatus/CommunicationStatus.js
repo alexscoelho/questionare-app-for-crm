@@ -17,9 +17,24 @@ export const CommunicationStatus = () => {
 		{ label: "Not interested anymore", value: "no_interested" },
 		{ label: "Start the interview right now", value: "start_interview" }
 	];
+	const [showTextArea, setShowTextArea] = useState(false);
 
 	const submitHandler = () => {
-		if (formData.selected === "start_interview") actions.startInterview(history);
+		if (formData.selected === "start_interview") {
+			actions.startInterview(history);
+		} else if (
+			formData.selected === "no_answer" ||
+			formData.selected === "no_available" ||
+			formData.selected === "no_interested"
+		) {
+			actions.updateContact(store.currentContact.id, {
+				communication_status: formData.selected
+			});
+		}
+	};
+	const handleClick = button => {
+		setFormData({ ...formData, selected: button.value });
+		setShowTextArea(true);
 	};
 
 	return (
@@ -33,7 +48,7 @@ export const CommunicationStatus = () => {
 						{buttonMessages.map((button, index) => {
 							return (
 								<Button
-									onClick={() => setFormData({ ...formData, selected: button.value })}
+									onClick={() => handleClick(button)}
 									key="index"
 									variant="light"
 									style={{
@@ -45,14 +60,19 @@ export const CommunicationStatus = () => {
 							);
 						})}
 					</Form.Group>
-					<Form.Group controlId="formBasicEmail">
-						<Form.Control as="textarea" rows={3} />
-					</Form.Group>
-					<Form.Group controlId="formBasicEmail">
-						<Button onClick={submitHandler} variant="primary" type="submit" block>
-							Continue
-						</Button>
-					</Form.Group>
+					{showTextArea && (
+						<>
+							<Form.Group controlId="formBasicEmail">
+								<Form.Control as="textarea" rows={3} />
+							</Form.Group>
+
+							<Form.Group controlId="formBasicEmail">
+								<Button onClick={submitHandler} variant="primary" type="submit" block>
+									Continue
+								</Button>
+							</Form.Group>
+						</>
+					)}
 				</Col>
 				<Col md={4}>
 					<InformationCard contact={store.currentContact} />

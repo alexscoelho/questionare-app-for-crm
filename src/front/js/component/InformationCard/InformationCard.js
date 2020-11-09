@@ -22,7 +22,7 @@ export const InformationCard = p => {
 					<b>First Name:</b> {p.contact.first_name}
 				</Card.Text>
 				<Card.Text>
-					<b>Last Name:</b> {contactInformation.lastName}
+					<b>Last Name:</b> {p.contact.last_name}
 				</Card.Text>
 				<Card.Text>
 					<b>Email:</b> {contactInformation.email}
@@ -34,8 +34,8 @@ export const InformationCard = p => {
 					<b>City:</b> {contactInformation.city}
 				</Card.Text>
 				<Alert variant="light" className="call-status">
-					2 days ago missed call <br />
-					Se le llamo pero no contesto
+					{p.contact.contacted_at} <br />
+					{p.contact.communication_status}
 				</Alert>
 				<Card.Link href="#">Add new note</Card.Link>
 			</Card.Body>

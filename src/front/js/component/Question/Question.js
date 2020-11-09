@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Context } from "../../store/appContext";
 import "./Question.scss";
 
@@ -6,6 +6,7 @@ import { Container, Col, Row, Card, Button, Form } from "react-bootstrap/";
 
 export const Question = () => {
 	const { store, actions } = useContext(Context);
+	const [showTextArea, setShowTextArea] = useState(false);
 
 	console.log(store.questionnaire);
 
@@ -16,13 +17,17 @@ export const Question = () => {
 				<div className="option-buttons">
 					{question.options.map((button, index) => {
 						return (
-							<Button key="index" variant="light" style={{ margin: 5 }}>
+							<Button
+								onClick={() => setShowTextArea(true)}
+								key="index"
+								variant="light"
+								style={{ margin: 5 }}>
 								{button.title}
 							</Button>
 						);
 					})}
 				</div>
-				<Form.Control as="textarea" rows={3} />
+				{showTextArea && <Form.Control as="textarea" rows={3} />}
 			</Form.Group>
 		);
 	});
