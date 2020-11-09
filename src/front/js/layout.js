@@ -8,7 +8,6 @@ import { Single } from "./views/single";
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
-import { Footer } from "./component/footer";
 
 import { Login } from "./component/Login/Login.js";
 import { Dashboard } from "./component/Dashboard/Dashboard.js";
@@ -37,9 +36,8 @@ const Layout = () => {
 						<Route exact path="/contact/:id">
 							<CommunicationStatus />
 						</Route>
-						<Route exact path="/interview/:id">
+						<Route exact path="/contact/:contactId/interview/:interviewId">
 							<InterviewCall />
-							<Footer />
 						</Route>
 						<Route exact path="/candidatelist">
 							<CandidateList />

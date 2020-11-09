@@ -1,34 +1,35 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../../store/appContext";
 import "./Question.scss";
+import PropTypes from "prop-types";
 
 import { Container, Col, Row, Card, Button, Form } from "react-bootstrap/";
 
-export const Question = () => {
-	const { store, actions } = useContext(Context);
+export const Question = ({ title, options }) => {
 	const [showTextArea, setShowTextArea] = useState(false);
 
-	console.log(store.questionnaire);
+	return (
+		<Form.Group>
+			<Form.Label>{title}</Form.Label>
+			<div className="option-buttons">
+				{options.map((optn, index) => {
+					return (
+						<Button onClick={() => setShowTextArea(true)} key={index} variant="light" style={{ margin: 5 }}>
+							{optn.title}
+						</Button>
+					);
+				})}
+			</div>
+			{showTextArea && <Form.Control as="textarea" rows={3} />}
+		</Form.Group>
+	);
+};
 
-	return store.questionnaire.questions.map((question, index) => {
-		return (
-			<Form.Group key={index}>
-				<Form.Label>{question.title}</Form.Label>
-				<div className="option-buttons">
-					{question.options.map((button, index) => {
-						return (
-							<Button
-								onClick={() => setShowTextArea(true)}
-								key="index"
-								variant="light"
-								style={{ margin: 5 }}>
-								{button.title}
-							</Button>
-						);
-					})}
-				</div>
-				{showTextArea && <Form.Control as="textarea" rows={3} />}
-			</Form.Group>
-		);
-	});
+Question.propTypes = {
+	title: PropTypes.string,
+	options: PropTypes.array
+};
+Question.defaultProps = {
+	title: "",
+	options: []
 };

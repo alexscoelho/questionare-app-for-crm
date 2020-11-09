@@ -10,7 +10,7 @@ export const CommunicationStatus = () => {
 	const { store, actions } = useContext(Context);
 	const [formData, setFormData] = useState({});
 	const history = useHistory();
-	const { params } = useParams();
+	const params = useParams();
 	const buttonMessages = [
 		{ label: "No answer", value: "no_answer" },
 		{ label: "Answered but not available", value: "no_available" },

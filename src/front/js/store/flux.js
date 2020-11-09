@@ -30,11 +30,28 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then(data => setStore({ currentContact: data }))
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
+			getInterview: id => {
+				fetch(`${process.env.BACKEND_URL}/api/interview/${id}`)
+					.then(response => response.json())
+					.then(data => setStore({ interview: data }))
+					.catch(error => console.log("Error loading contacs from backend", error));
+			},
 			updateContact: (id, communicationStatus) => {
 				fetch(`${process.env.BACKEND_URL}/api/contact/${id}`, {
 					method: "PUT",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify(communicationStatus)
+				})
+					.then(response => response.json())
+					.then(data => console.log(data))
+					.catch(error => console.log("Error loading contacs from backend", error));
+			},
+			updateInterview: (interviewId, interviewStatus) => {
+				const store = getStore();
+				fetch(`${process.env.BACKEND_URL}/contact/${store.currentContact.id}/interview/${interviewId}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(interviewStatus)
 				})
 					.then(response => response.json())
 					.then(data => console.log(data))
@@ -63,7 +80,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then(response => response.json())
 					.then(data => {
 						setStore({ questionnaire: data.questionnaire, interview: data.interview });
-						history.push("/interview/" + data.interview.id);
+						history.push(`/contact/${contactId}/interview/${data.interview.id}`);
 					})
 					.catch(error => console.log("Error loading contacs from backend", error));
 			}

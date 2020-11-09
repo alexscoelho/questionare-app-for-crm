@@ -1,8 +1,11 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
+import { Context } from "../store/appContext";
 
 import { Button, Navbar } from "react-bootstrap/";
 
-export const Footer = () => {
+export const InterviewActions = () => {
+	const { store, actions } = useContext(Context);
+
 	return (
 		<Navbar fixed="bottom" className="justify-content-end">
 			<Button style={{ marginRight: 5 }} variant="secondary">
@@ -11,7 +14,10 @@ export const Footer = () => {
 			<Button style={{ marginRight: 5 }} variant="secondary">
 				Save as draft
 			</Button>
-			<Button style={{ marginRight: 5 }} variant="success">
+			<Button
+				onClick={() => actions.updateInterview(store.interview.id, { status: "interviewed" })}
+				style={{ marginRight: 5 }}
+				variant="success">
 				Submit Interview
 			</Button>
 		</Navbar>
