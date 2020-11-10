@@ -67,7 +67,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
-			startInterview: history => {
+			startInterview: (history, params) => {
 				const store = getStore();
 				fetch(`${process.env.BACKEND_URL}/api/contact/${store.currentContact.id}/interview`, {
 					method: "POST",
@@ -79,8 +79,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				})
 					.then(response => response.json())
 					.then(data => {
-						setStore({ questionnaire: data.questionnaire, interview: data.interview });
-						history.push(`/contact/${contactId}/interview/${data.interview.id}`);
+						setStore({ interview: data });
+						history.push(`/contact/${params.contactId}/interview/${data.id}`);
 					})
 					.catch(error => console.log("Error loading contacs from backend", error));
 			}

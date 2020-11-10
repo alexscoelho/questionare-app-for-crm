@@ -49,7 +49,9 @@ class Contact(db.Model):
             "interview_status": self.interview_status,
             "approved_status": self.approved_status,
             "activities": [a.serialize() for a in self.activities],
-            "communication_status": self.communication_status
+            "communication_status": self.communication_status,
+            "contact_attemps": self.contact_attemps,
+            "contacted_at": self.contacted_at
         }
 
 

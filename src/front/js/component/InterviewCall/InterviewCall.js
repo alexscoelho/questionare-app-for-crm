@@ -14,9 +14,7 @@ export const InterviewCall = () => {
 	console.log(params);
 
 	useEffect(() => {
-		console.log("Test1", store);
 		if (!store.interview) {
-			console.log("Test2");
 			actions.getInterview(params.interviewId);
 		}
 		if (!store.currentContact) {
@@ -25,7 +23,7 @@ export const InterviewCall = () => {
 	}, []);
 
 	if (!store.interview) return "loading...";
-	console.log("store.interview:", store.interview);
+
 	return (
 		<Container fluid>
 			<Row>

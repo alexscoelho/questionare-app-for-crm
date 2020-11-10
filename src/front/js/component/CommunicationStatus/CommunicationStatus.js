@@ -19,9 +19,18 @@ export const CommunicationStatus = () => {
 	];
 	const [showTextArea, setShowTextArea] = useState(false);
 
+	console.log("communicationStatus", store);
+	// useEffect(() => {
+
+	// 	if (!store.interview) {
+	// 		console.log("Test2");
+	// 		actions.getInterview(31);
+	// 	}
+	// }, []);
+
 	const submitHandler = () => {
 		if (formData.selected === "start_interview") {
-			actions.startInterview(history);
+			actions.startInterview(history, params);
 		} else if (
 			formData.selected === "no_answer" ||
 			formData.selected === "no_available" ||

@@ -33,7 +33,7 @@ const Layout = () => {
 						<Route exact path="/dashboard">
 							<Dashboard />
 						</Route>
-						<Route exact path="/contact/:id">
+						<Route exact path="/contact/:contactId">
 							<CommunicationStatus />
 						</Route>
 						<Route exact path="/contact/:contactId/interview/:interviewId">

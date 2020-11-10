@@ -167,6 +167,7 @@ def get_next_contact(agent_id):
     contact = Contact.query.filter_by(interview_status="pending",agent_id=agent_id).order_by('contacted_at').order_by('contact_attemps').first()
     if contact is None:
         raise APIException('No contact available')
+    
     return contact.serialize(), 200
 
 @api.route('/interview/<int:interview_id>', methods=['GET'])
