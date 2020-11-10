@@ -11,7 +11,12 @@ export const InterviewActions = () => {
 			<Button style={{ marginRight: 5 }} variant="secondary">
 				Discard
 			</Button>
-			<Button style={{ marginRight: 5 }} variant="secondary">
+			<Button
+				onClick={actions.updateContact(store.currentContact.id, {
+					interview_status: "Incomplete"
+				})}
+				style={{ marginRight: 5 }}
+				variant="secondary">
 				Save as draft
 			</Button>
 			<Button

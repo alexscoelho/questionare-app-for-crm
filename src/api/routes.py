@@ -5,6 +5,8 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, Agent, Contact, Interview, Questionnaire, Activity,Question, Answer, Option
 from api.utils import generate_sitemap, APIException
 from datetime import datetime
+from flask import jsonify
+
 
 api = Blueprint('api', __name__)
 
@@ -162,6 +164,8 @@ def get_interviews():
     all_interviews = list(map(lambda x: x.serialize(), interviews))
     return jsonify(all_interviews), 200
 
+
+
 @api.route('/agent/<int:agent_id>/contact/next', methods=['GET'])
 def get_next_contact(agent_id):
     contact = Contact.query.filter_by(interview_status="pending",agent_id=agent_id).order_by('contacted_at').order_by('contact_attemps').first()
@@ -170,12 +174,28 @@ def get_next_contact(agent_id):
     
     return contact.serialize(), 200
 
+@api.route('/agent/<int:agent_id>/interview/next', methods=['GET'])
+def get_next_interview(agent_id):
+
+    all_interviews = Interview.query.filter_by(agent_id=agent_id)
+    status = request.args.get('status')
+    if status is not None and status != "":
+        all_interviews = all_interviews.filter_by(status=status)
+
+    all_interviews = all_interviews.order_by('starting_time')
+    
+    if all_interviews.count() == 0:
+        raise APIException('No pending interviews')
+
+    return jsonify([a.serialize() for a in all_interviews]), 200
+
 @api.route('/interview/<int:interview_id>', methods=['GET'])
 def get_interview(interview_id):
     interview1 = Interview.query.get(interview_id)
     if interview1 is None:
         raise APIException('No interview with that id')
     return interview1.serialize_big(), 200
+
 
 @api.route('/contact/<int:contact_id>', methods=['GET', 'PUT'])
 def get_single_contact(contact_id):

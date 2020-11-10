@@ -15,9 +15,14 @@ export const Dashboard = () => {
 		{ message: `${3} candidates processed`, link: "Review", callTo: "contactList" },
 		{ message: `You have ${3} interviews started but not finished`, link: "Finish Now", callTo: "incomplete" }
 	];
+	console.log("currentcontact:", store.currentContact);
 	const handleClick = alert => {
 		setAlertData({ ...alertData, selected: alert.callTo });
 		if (alert.callTo === "new") actions.redirectNextInterview(history);
+		if (alert.callTo === "incomplete")
+			actions.getNextInterviews({ status: "DRAFT" }).then(interview => {
+				if (interview.status === "DRAFT") history.push(`/contact/${store.currentContact.id}/interview/${id}`);
+			});
 	};
 	return (
 		<Container fluid>

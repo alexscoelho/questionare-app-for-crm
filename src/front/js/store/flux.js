@@ -4,6 +4,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			candidates: [],
 			questionnaire: null,
 			interview: null,
+			interviews: null,
 			currentContact: null,
 			agent: { id: 1 },
 			questionnaireId: 1
@@ -30,17 +31,41 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then(data => setStore({ currentContact: data }))
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
-			getInterview: id => {
-				fetch(`${process.env.BACKEND_URL}/api/interview/${id}`)
-					.then(response => response.json())
-					.then(data => setStore({ interview: data }))
-					.catch(error => console.log("Error loading contacs from backend", error));
-			},
-			updateContact: (id, communicationStatus) => {
+			getInterview: (history, id) =>
+				new Promise((resolve, reject) => {
+					const store = getStore();
+					fetch(`${process.env.BACKEND_URL}/api/interview/${id}`)
+						.then(response => response.json())
+						.then(data => {
+							setStore({ interview: data });
+							resolve(data);
+						})
+						.catch(error => {
+							reject(error);
+							console.log("Error loading contacs from backend", error);
+						});
+				}),
+			getNextInterviews: (opt = {}) =>
+				new Promise((resolve, reject) => {
+					const { status } = opt;
+					const store = getStore();
+					fetch(`${process.env.BACKEND_URL}/api/agent/${store.agent.id}/interview/next?status=${status}`)
+						.then(response => response.json())
+						.then(data => {
+							setStore({ interviews: data });
+							resolve(data);
+						})
+						.catch(error => {
+							reject(error);
+							console.log("Error loading contacs from backend", error);
+						});
+				}),
+
+			updateContact: (id, contactBody) => {
 				fetch(`${process.env.BACKEND_URL}/api/contact/${id}`, {
 					method: "PUT",
 					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(communicationStatus)
+					body: JSON.stringify(contactBody)
 				})
 					.then(response => response.json())
 					.then(data => console.log(data))

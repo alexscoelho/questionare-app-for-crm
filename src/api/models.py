@@ -86,6 +86,7 @@ class Interview(db.Model):
     answers = db.relationship('Answer', backref='interview', lazy=True)
     status = db.Column(db.String(80), unique=False, nullable=False)
     score_total = db.Column(db.Integer, unique=False, nullable=True)
+    
 
     def __repr__(self):
         return '<Interview %r>' % self.id

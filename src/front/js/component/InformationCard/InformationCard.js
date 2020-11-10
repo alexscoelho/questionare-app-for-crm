@@ -18,11 +18,11 @@ export const InformationCard = p => {
 	}, []);
 
 	if (!p.contact) return "loading...";
+	console.log("contact:", p.contact);
 	return (
 		<Card style={{ width: "22rem" }} className="ml-auto">
 			<Card.Body>
 				<Card.Title>Candidate Information</Card.Title>
-
 				<Card.Text>
 					<b>First Name:</b> {p.contact.first_name}
 				</Card.Text>
