@@ -20,6 +20,26 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+@api.route('/contact/<int:contact_id>/interview/<int:interview_id>', methods=['PUT'])
+def edit_interview(contact_id,interview_id):
+    body = request.get_json()
+
+   
+    interview1 = Interview.query.get(interview_id)
+
+    if interview1 is None:
+        raise APIException('No interview with that id')
+
+    interview1.status = body['status']
+    interview1.ending_time = datetime.now()
+    db.session.commit() 
+
+    new_contact_activity(contact_id,"interview updated to " + body['status'])
+
+
+    return interview1.serialize(), 200
+
+
 @api.route('/questionnaire/<int:id>', methods=['GET'])
 def get_questionnaire(id):
 
@@ -48,24 +68,6 @@ def get_contacts():
     all_contacts = list(map(lambda x: x.serialize(), contacts))
     return jsonify(all_contacts), 200
 
-@api.route('/contact/<int:contact_id>/interview/<int:interview_id>', methods=['PUT', 'GET'])
-def edit_interview(contact_id,interview_id):
-    body = request.get_json()
-
-   
-    interview1 = Interview.query.get(interview_id)
-
-    if interview1 is None:
-        raise APIException('No interview with that id')
-
-    interview1.status = body['status']
-    interview1.ending_time = datetime.now()
-    db.session.commit() 
-
-    new_contact_activity(contact_id,"interview updated to " + body['status'])
-
-
-    return interview1.serialize(), 200
 
 
 @api.route('/contact/<int:contact_id>/interview', methods=['POST'])

@@ -31,7 +31,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then(data => setStore({ currentContact: data }))
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
-			getInterview: (history, id) =>
+			getInterview: id =>
 				new Promise((resolve, reject) => {
 					const store = getStore();
 					fetch(`${process.env.BACKEND_URL}/api/interview/${id}`)
@@ -71,27 +71,44 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then(data => console.log(data))
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
-			updateInterview: (interviewId, interviewStatus) => {
+			updateInterview: (interviewId, interview) => {
 				const store = getStore();
-				fetch(`${process.env.BACKEND_URL}/contact/${store.currentContact.id}/interview/${interviewId}`, {
+				fetch(`${process.env.BACKEND_URL}/api/contact/${store.currentContact.id}/interview/${interviewId}`, {
 					method: "PUT",
 					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(interviewStatus)
+					body: JSON.stringify(interview)
 				})
 					.then(response => response.json())
 					.then(data => console.log(data))
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
-			redirectNextInterview: history => {
-				const store = getStore();
-				fetch(`${process.env.BACKEND_URL}/api/agent/${store.agent.id}/contact/next`)
-					.then(response => response.json())
-					.then(data => {
-						setStore({ currentContact: data });
-						history.push(`/contact/${data.id}`);
-					})
-					.catch(error => console.log("Error loading contacs from backend", error));
-			},
+			redirectNextInterview: () =>
+				new Promise((resolve, reject) => {
+					const store = getStore();
+					fetch(`${process.env.BACKEND_URL}/api/agent/${store.agent.id}/contact/next`)
+						.then(async response => {
+							console.log("response:", response);
+							if (response.status === 200) return await response.json();
+							else if (response.status === 400) {
+								console.log("entro al 400");
+								const error = await response.json();
+								throw new Error(error.message);
+							} else {
+								throw new Error("imposible to retrieve an interview for this agent");
+							}
+						})
+
+						.then(data => {
+							setStore({ currentContact: data });
+							console.log("no deberia");
+							resolve(data);
+						})
+						.catch(error => {
+							reject(error);
+							console.log("Error loading contacs from backend", error);
+						});
+				}),
+
 			startInterview: (history, params) => {
 				const store = getStore();
 				fetch(`${process.env.BACKEND_URL}/api/contact/${store.currentContact.id}/interview`, {

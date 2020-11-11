@@ -11,11 +11,14 @@ import { InterviewActions } from "../InterviewActions";
 export const InterviewCall = () => {
 	const params = useParams();
 	const { store, actions } = useContext(Context);
-	console.log(params);
 
 	useEffect(() => {
 		if (!store.interview) {
-			actions.getInterview(params.interviewId);
+			if (params.interviewId !== null) {
+				actions.getInterview(params.interviewId);
+			} else {
+				actions.getInterview(store.interviews[0].id);
+			}
 		}
 		if (!store.currentContact) {
 			actions.getContact(params.contactId);
@@ -26,16 +29,20 @@ export const InterviewCall = () => {
 
 	return (
 		<Container fluid>
-			<Row>
-				<Col md={8}>
-					{store.interview.questionnaire.questions.map((question, index) => {
-						return <Question key={index} title={question.title} options={question.options} />;
-					})}
-				</Col>
-				<Col md={4}>
-					<InformationCard contact={store.currentContact} />
-				</Col>
-			</Row>
+			{store.currentContact === null ? (
+				<h1>No more contacts to interview</h1>
+			) : (
+				<Row>
+					<Col md={8}>
+						{store.interview.questionnaire.questions.map((question, index) => {
+							return <Question key={index} title={question.title} options={question.options} />;
+						})}
+					</Col>
+					<Col md={4}>
+						<InformationCard contact={store.currentContact} />
+					</Col>
+				</Row>
+			)}
 			<InterviewActions />
 		</Container>
 	);

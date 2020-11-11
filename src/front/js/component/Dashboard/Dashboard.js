@@ -9,24 +9,43 @@ export const Dashboard = () => {
 	const { store, actions } = useContext(Context);
 	const history = useHistory();
 	const [alertData, setAlertData] = useState({});
+	const [message, setMessage] = useState({ label: "", type: "hidden" });
 	const alerts = [
 		{ message: `You pre-scheduled interviews`, link: "Next Interview", callTo: "scheduled" },
 		{ message: `You have ${3} pending interviews`, link: "Next Interview", callTo: "new" },
 		{ message: `${3} candidates processed`, link: "Review", callTo: "contactList" },
 		{ message: `You have ${3} interviews started but not finished`, link: "Finish Now", callTo: "incomplete" }
 	];
-	console.log("currentcontact:", store.currentContact);
+
 	const handleClick = alert => {
 		setAlertData({ ...alertData, selected: alert.callTo });
-		if (alert.callTo === "new") actions.redirectNextInterview(history);
+		if (alert.callTo === "new")
+			actions
+				.redirectNextInterview(history)
+
+				.then(contact => console.log(".then", contact) || history.push(`/contact/${contact.id}`))
+				.catch(
+					error =>
+						console.log(".catch", error.message, error.msg, error.details, error.toString()) ||
+						setMessage({ label: error.message || error, type: "danger" })
+				);
 		if (alert.callTo === "incomplete")
-			actions.getNextInterviews({ status: "DRAFT" }).then(interview => {
-				if (interview.status === "DRAFT") history.push(`/contact/${store.currentContact.id}/interview/${id}`);
-			});
+			actions
+				.getNextInterviews({ status: "DRAFT" })
+				.then(interview => {
+					if (interview[0].status === "DRAFT" && interview.length === 1)
+						history.push(`/contact/${interview[0].contact_id}/interview/${interview[0].id}`);
+				})
+				.catch(error => setMessage({ label: error.message || error, type: "danger" }));
 	};
 	return (
 		<Container fluid>
 			<h1>Agent: Bob Dylan</h1>
+			{message.type != "hidden" && (
+				<Alert variant={message.type} className="event-message">
+					{message.label}
+				</Alert>
+			)}
 			{alerts.map((alert, index) => {
 				return (
 					<Alert key={index} variant="light" className="event-message">
