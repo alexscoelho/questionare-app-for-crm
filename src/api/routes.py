@@ -31,7 +31,7 @@ def edit_interview(contact_id,interview_id):
         raise APIException('No interview with that id')
 
     interview1.status = body['status']
-    interview1.ending_time = datetime.now()
+    interview1.ending_time = datetime.utcnow()
     db.session.commit() 
 
     new_contact_activity(contact_id,"interview updated to " + body['status'])
@@ -77,24 +77,26 @@ def create_interview(contact_id):
     existing_interview = Interview.query.filter_by(contact_id=contact_id, questionnaire_id=body['questionnaire_id']).first()
     if existing_interview is not None:
         raise APIException('There is already an interview with this id for this contact')
+
+
     interview1 = Interview()
     interview1.agent_id = body['agent_id']
     interview1.questionnaire_id = body['questionnaire_id']
     interview1.contact_id = contact_id
-    interview1.status = 'DRAFT'
-    interview1.starting_time = datetime.now()
+    if "scheduled_time" not in body:
+        interview1.starting_time = datetime.utcnow()
+        interview1.status = 'DRAFT'
+    else:
+        interview1.status = 'POSPONED'
+        interview1.scheduled_time = body['scheduled_time']
     db.session.add(interview1)
     db.session.commit()
+
+    
 
     new_contact_activity(contact_id,"new interview created")
 
     questionnaire = Questionnaire.query.get(body['questionnaire_id'])
-
-    
-
-
-
-
 
     return interview1.serialize_big(), 200
     
@@ -170,7 +172,7 @@ def get_interviews():
 
 @api.route('/agent/<int:agent_id>/contact/next', methods=['GET'])
 def get_next_contact(agent_id):
-    contact = Contact.query.filter_by(interview_status="pending",agent_id=agent_id).order_by('contacted_at').order_by('contact_attemps').first()
+    contact = Contact.query.filter_by(interview_status="PENDING",agent_id=agent_id).order_by('contacted_at').order_by('contact_attemps').first()
     if contact is None:
         raise APIException('No contact available')
     
@@ -188,6 +190,8 @@ def get_next_interview(agent_id):
     
     if all_interviews.count() == 0:
         raise APIException('No pending interviews')
+
+    
 
     return jsonify([a.serialize() for a in all_interviews]), 200
 

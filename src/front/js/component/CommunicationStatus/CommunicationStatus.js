@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import "./CommunicationStatus.scss";
 import { useHistory, useParams } from "react-router-dom";
 import { Context } from "../../store/appContext";
+import "react-datetime/css/react-datetime.css";
+import Datetime from "react-datetime";
 
 import { Container, Col, Row, Card, Button, Form } from "react-bootstrap/";
 import { InformationCard } from "../InformationCard/InformationCard.js";
@@ -15,7 +17,8 @@ export const CommunicationStatus = () => {
 		{ label: "No answer", value: "no_answer" },
 		{ label: "Answered but not available", value: "no_available" },
 		{ label: "Not interested anymore", value: "no_interested" },
-		{ label: "Start the interview right now", value: "start_interview" }
+		{ label: "Start the interview right now", value: "start_interview" },
+		{ label: "Re-schedule Interview", value: "schedule_interview" }
 	];
 	const [showTextArea, setShowTextArea] = useState(false);
 
@@ -39,11 +42,27 @@ export const CommunicationStatus = () => {
 			actions.updateContact(store.currentContact.id, {
 				communication_status: formData.selected
 			});
+		} else if (formData.selected === "schedule_interview") {
+			actions.startInterview(history, params, formData);
 		}
 	};
 	const handleClick = button => {
 		setFormData({ ...formData, selected: button.value });
 		setShowTextArea(true);
+	};
+
+	const pickDate = formData => {
+		if (formData.selected === "schedule_interview")
+			return (
+				<>
+					<label htmlFor="schedule">Pick a time and date</label>
+					<Datetime
+						displayTimeZone={store.agent.time_zone}
+						utc
+						onChange={dateTime => setFormData({ ...formData, dateTime })}
+					/>
+				</>
+			);
 	};
 
 	return (
@@ -71,8 +90,9 @@ export const CommunicationStatus = () => {
 					</Form.Group>
 					{showTextArea && (
 						<>
+							{pickDate(formData)}
 							<Form.Group controlId="formBasicEmail">
-								<Form.Control as="textarea" rows={3} />
+								<Form.Control as="textarea" rows={3} placeholder="Commets..." />
 							</Form.Group>
 
 							<Form.Group controlId="formBasicEmail">

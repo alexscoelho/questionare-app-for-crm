@@ -12,6 +12,7 @@ class Agent(db.Model):
     password = db.Column(db.String(80), unique=False, nullable=False)
     interviews = db.relationship('Interview', backref='agent', lazy=True)
     contacts = db.relationship('Contact', backref='agent', lazy=True)
+    time_zone = db.Column(db.String(120), unique=True, default='America/New_York')
    
     
     def __repr__(self):
@@ -21,13 +22,14 @@ class Agent(db.Model):
         return {
             "id": self.id,
             "email": self.email,
+            "time_zone": self.time_zone
         }
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(80), unique=False, nullable=False)
     last_name = db.Column(db.String(80), unique=False, nullable=False)
-    interview_status = db.Column(db.String(80), unique=False, nullable=False, default="pending")
+    interview_status = db.Column(db.String(80), unique=False, nullable=False, default="PENDING")
     approved_status = db.Column(db.String(80), unique=False, nullable=True)
     communication_status = db.Column(db.String(80), unique=False, nullable=True)
     interview = db.relationship('Interview', backref='contact', lazy=True)
@@ -86,6 +88,7 @@ class Interview(db.Model):
     answers = db.relationship('Answer', backref='interview', lazy=True)
     status = db.Column(db.String(80), unique=False, nullable=False)
     score_total = db.Column(db.Integer, unique=False, nullable=True)
+    scheduled_time = db.Column(db.DateTime, nullable=True)
     
 
     def __repr__(self):
@@ -101,6 +104,7 @@ class Interview(db.Model):
             "contact_id": self.contact_id,
             "status": self.status,
             "score_total": self.score_total,
+            "scheduled_time": self.scheduled_time
         }
 
     def serialize_big(self):

@@ -6,7 +6,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			interview: null,
 			interviews: null,
 			currentContact: null,
-			agent: { id: 1 },
+			agent: { id: 1, time_zone: "America/New_York" },
 			questionnaireId: 1
 		},
 		actions: {
@@ -109,14 +109,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 						});
 				}),
 
-			startInterview: (history, params) => {
+			startInterview: (history, params, formData) => {
 				const store = getStore();
 				fetch(`${process.env.BACKEND_URL}/api/contact/${store.currentContact.id}/interview`, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
 						questionnaire_id: store.questionnaireId,
-						agent_id: store.agent.id
+						agent_id: store.agent.id,
+						scheduled_time: formData.dateTime
 					})
 				})
 					.then(response => response.json())
