@@ -21,20 +21,14 @@ export const Dashboard = () => {
 		setAlertData({ ...alertData, selected: alert.callTo });
 		if (alert.callTo === "new")
 			actions
-				.redirectNextInterview(history)
-
-				.then(contact => console.log(".then", contact) || history.push(`/contact/${contact.id}`))
-				.catch(
-					error =>
-						console.log(".catch", error.message, error.msg, error.details, error.toString()) ||
-						setMessage({ label: error.message || error, type: "danger" })
-				);
+				.redirectNextInterview()
+				.then(contact => history.push(`/contact/${contact.id}`))
+				.catch(error => setMessage({ label: error.message || error, type: "danger" }));
 		if (alert.callTo === "incomplete")
 			actions
 				.getNextInterviews({ status: "DRAFT" })
 				.then(interview => {
-					if (interview[0].status === "DRAFT" && interview.length === 1)
-						history.push(`/contact/${interview[0].contact_id}/interview/${interview[0].id}`);
+					history.push("/pending/interviews");
 				})
 				.catch(error => setMessage({ label: error.message || error, type: "danger" }));
 	};

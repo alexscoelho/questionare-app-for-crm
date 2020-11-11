@@ -5,15 +5,9 @@ import { Context } from "../../store/appContext";
 import { SmartTable, TableRow } from "../SmartTable/SmartTable";
 import { Container, Row, Col, Button } from "react-bootstrap/";
 
-// const candidates = [
-// 	{ id: 1, firstName: "Bob", lastName: "Dylan", checked: false },
-// 	{ id: 2, firstName: "Sam", lastName: "Dylan", checked: false },
-// 	{ id: 3, firstName: "Cyndy", lastName: "Dylan", checked: false },
-// 	{ id: 4, firstName: "Delta", lastName: "Dylan", checked: false }
-// ];
-
 export const CandidateList = () => {
 	const { store, actions } = useContext(Context);
+	const tableHeaders = ["Student", "Interview", "Aproved", "Score", "Test", "Last Contact"];
 
 	const handleClick = () => {
 		alert(`There ${store.candidates.filter(c => c.checked).length} store.candidates checked`);
@@ -27,18 +21,16 @@ export const CandidateList = () => {
 					<Button style={{ marginBotton: 5 }} variant="light" onClick={handleClick}>
 						Actions
 					</Button>
-					<SmartTable handleSort={key => actions.getContacts({ sort: key })}>
+					<SmartTable headers={tableHeaders} handleSort={key => actions.getContacts({ sort: key })}>
 						{store.candidates.map((c, index) => (
 							<TableRow
 								key={index}
-								contact={c}
+								data={c}
 								onToggle={value =>
-									setstore.candidates(
-										store.candidates.map(contact => {
-											if (c.id === contact.id) contact.checked = value;
-											return contact;
-										})
-									)
+									store.candidates.map(contact => {
+										if (c.id === contact.id) contact.checked = value;
+										return contact;
+									})
 								}
 							/>
 						))}

@@ -14,6 +14,7 @@ import { Dashboard } from "./component/Dashboard/Dashboard.js";
 import { CommunicationStatus } from "./component/CommunicationStatus/CommunicationStatus.js";
 import { InterviewCall } from "./component/InterviewCall/InterviewCall.js";
 import { CandidateList } from "./component/CandidateList/CandidateList.js";
+import { PendingInterviews } from "./views/PendingInterviews";
 
 //create your first component
 const Layout = () => {
@@ -41,6 +42,9 @@ const Layout = () => {
 						</Route>
 						<Route exact path="/candidatelist">
 							<CandidateList />
+						</Route>
+						<Route exact path="/pending/interviews">
+							<PendingInterviews />
 						</Route>
 						<Route exact path="/demo">
 							<Demo />
