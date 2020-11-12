@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 
 from datetime import datetime
-import enum
+
 
 
 db = SQLAlchemy()
@@ -56,12 +56,24 @@ class Contact(db.Model):
             "contacted_at": self.contacted_at
         }
 
+    def serialize_small(self):
+        return {
+            "id": self.id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "interview_status": self.interview_status,
+            "approved_status": self.approved_status,
+            "communication_status": self.communication_status,
+            "contact_attemps": self.contact_attemps,
+            "contacted_at": self.contacted_at
+        }
+
 
 class Activity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     details = db.Column(db.String(350), unique=False, nullable=False)
     label = db.Column(db.String(100), unique=False, nullable=True)
-    activity_type = db.Column(db.Enum('note','event'))
+    activity_type = db.Column(db.String(80), unique=False, nullable=False) #'note','event'
     contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -88,7 +100,7 @@ class Interview(db.Model):
     answers = db.relationship('Answer', backref='interview', lazy=True)
     status = db.Column(db.String(80), unique=False, nullable=False)
     score_total = db.Column(db.Integer, unique=False, nullable=True)
-    scheduled_time = db.Column(db.DateTime, nullable=True)
+    scheduled_time = db.Column(db.DateTime(timezone=True), nullable=True)
     
 
     def __repr__(self):
@@ -102,6 +114,7 @@ class Interview(db.Model):
             "agent_id": self.agent_id,
             "questionnaire_id": self.questionnaire_id,
             "contact_id": self.contact_id,
+            "contact": self.contact.serialize_small(),
             "status": self.status,
             "score_total": self.score_total,
             "scheduled_time": self.scheduled_time
@@ -119,7 +132,8 @@ class Interview(db.Model):
             "status": self.status,
             "score_total": self.score_total,
             'questionnaire': questionnaire.serialize(),
-            'answers': [a.serialize() for a in self.answers]
+            'answers': [a.serialize() for a in self.answers],
+            "scheduled_time": self.scheduled_time
         }
 
 

@@ -12,9 +12,11 @@ export const InterviewActions = () => {
 				Discard
 			</Button>
 			<Button
-				onClick={actions.updateContact(store.currentContact.id, {
-					interview_status: "Incomplete"
-				})}
+				onClick={() =>
+					actions.updateContact(store.currentContact.id, {
+						interview_status: "Incomplete"
+					})
+				}
 				style={{ marginRight: 5 }}
 				variant="secondary">
 				Save as draft

@@ -26,6 +26,7 @@ export const InterviewCall = () => {
 	}, []);
 
 	if (!store.interview) return "loading...";
+	console.log("interview sanitazed", store.interview);
 
 	return (
 		<Container fluid>
@@ -35,7 +36,14 @@ export const InterviewCall = () => {
 				<Row>
 					<Col md={8}>
 						{store.interview.questionnaire.questions.map((question, index) => {
-							return <Question key={index} title={question.title} options={question.options} />;
+							return (
+								<Question
+									answer={question.answer || null}
+									key={index}
+									title={question.title}
+									options={question.options}
+								/>
+							);
 						})}
 					</Col>
 					<Col md={4}>

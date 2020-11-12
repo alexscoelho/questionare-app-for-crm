@@ -41,6 +41,9 @@ export const InformationCard = p => {
 				<Alert variant="light" className="call-status">
 					{p.contact.contacted_at} <br />
 					{p.contact.communication_status}
+					{p.contact.activities.map(a => {
+						return <li key={a.id}>{a.details}</li>;
+					})}
 				</Alert>
 				<Card.Link href="#">Add new note</Card.Link>
 			</Card.Body>

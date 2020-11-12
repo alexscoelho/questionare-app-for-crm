@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: d333796edc66
+Revision ID: 9de8b30685f3
 Revises: 
-Create Date: 2020-11-11 22:49:49.934022
+Create Date: 2020-11-12 00:26:38.259392
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd333796edc66'
+revision = '9de8b30685f3'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,8 +22,10 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('email', sa.String(length=120), nullable=False),
     sa.Column('password', sa.String(length=80), nullable=False),
+    sa.Column('time_zone', sa.String(length=120), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email')
+    sa.UniqueConstraint('email'),
+    sa.UniqueConstraint('time_zone')
     )
     op.create_table('questionnaire',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -48,7 +50,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('details', sa.String(length=350), nullable=False),
     sa.Column('label', sa.String(length=100), nullable=True),
-    sa.Column('activity_type', sa.Enum('note', 'event'), nullable=True),
+    sa.Column('activity_type', sa.String(length=80), nullable=False),
     sa.Column('contact_id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['contact_id'], ['contact.id'], ),
@@ -63,7 +65,7 @@ def upgrade():
     sa.Column('contact_id', sa.Integer(), nullable=False),
     sa.Column('status', sa.String(length=80), nullable=False),
     sa.Column('score_total', sa.Integer(), nullable=True),
-    sa.Column('scheduled_time', sa.DateTime(), nullable=True),
+    sa.Column('scheduled_time', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['agent_id'], ['agent.id'], ),
     sa.ForeignKeyConstraint(['contact_id'], ['contact.id'], ),
     sa.ForeignKeyConstraint(['questionnaire_id'], ['questionnaire.id'], ),

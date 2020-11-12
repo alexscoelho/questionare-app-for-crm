@@ -86,7 +86,9 @@ def create_interview(contact_id):
     if "scheduled_time" not in body:
         interview1.starting_time = datetime.utcnow()
         interview1.status = 'DRAFT'
+        new_contact_activity(contact_id,"Interview rescheduled for"+ body['scheduled_time'])
     else:
+        new_contact_activity(contact_id,"Interview started")
         interview1.status = 'POSPONED'
         interview1.scheduled_time = body['scheduled_time']
     db.session.add(interview1)
@@ -94,14 +96,13 @@ def create_interview(contact_id):
 
     
 
-    new_contact_activity(contact_id,"new interview created")
 
     questionnaire = Questionnaire.query.get(body['questionnaire_id'])
 
     return interview1.serialize_big(), 200
     
         
-@api.route('/interview/answer', methods=['POST', 'GET']) 
+@api.route('/interview/answer', methods=['POST']) 
 def create_answer():
     body = request.get_json()
 
@@ -135,12 +136,14 @@ def modify_answer(answer_id):
     if answer1 is None:
         raise APIException('No answer with that id')
 
-    answer1.comments = body['comments']
-    answer1.interview_id = body['interview_id']
-    answer1.option_id  = body['option_id']
-    answer1.value = option.value
+    if "comments" in answer1:
+        answer1.comments = body['comments']
+    if "option_id" in answer1:
+        answer1.option_id  = body['option_id']
+    if "value" in answer1:
+        answer1.value = option.value
     db.session.commit()
-    update_interview_score(body['interview_id'])
+    update_interview_score(answer1.interview_id)
     return answer1.serialize(), 200
 
 def update_interview_score(interview_id):

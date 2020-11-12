@@ -34,10 +34,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getInterview: id =>
 				new Promise((resolve, reject) => {
 					const store = getStore();
+					const actions = getActions();
 					fetch(`${process.env.BACKEND_URL}/api/interview/${id}`)
 						.then(response => response.json())
 						.then(data => {
-							setStore({ interview: data });
+							setStore({ interview: actions.sanitazeInterview(data) });
 							resolve(data);
 						})
 						.catch(error => {
@@ -45,6 +46,27 @@ const getState = ({ getStore, getActions, setStore }) => {
 							console.log("Error loading contacs from backend", error);
 						});
 				}),
+			sanitazeInterview: interview => {
+				let questions = interview.questionnaire.questions.map(q => {
+					for (let a in interview.answers) {
+						a = interview.answers[a];
+						const option = q.options.find(o => o.id === a.option_id);
+
+						if (typeof option === "object") {
+							q.answer = a;
+							return q;
+						}
+					}
+					return q;
+				});
+				return {
+					...interview,
+					questionnaire: {
+						...interview.questionnaire,
+						questions
+					}
+				};
+			},
 			getNextInterviews: (opt = {}) =>
 				new Promise((resolve, reject) => {
 					const { status } = opt;
@@ -52,7 +74,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					fetch(`${process.env.BACKEND_URL}/api/agent/${store.agent.id}/interview/next?status=${status}`)
 						.then(response => response.json())
 						.then(data => {
-							setStore({ interviews: data });
+							setStore({ interviews: Array.isArray(data) ? data : [] });
 							resolve(data);
 						})
 						.catch(error => {
@@ -111,18 +133,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			startInterview: (history, params, formData) => {
 				const store = getStore();
+				const actions = getActions();
 				fetch(`${process.env.BACKEND_URL}/api/contact/${store.currentContact.id}/interview`, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
 						questionnaire_id: store.questionnaireId,
 						agent_id: store.agent.id,
-						scheduled_time: formData.dateTime
+
+						scheduled_time: formData ? formData.dateTime : null
 					})
 				})
 					.then(response => response.json())
 					.then(data => {
-						setStore({ interview: data });
+						setStore({ interview: actions.sanitazeInterview(data) });
 						history.push(`/contact/${params.contactId}/interview/${data.id}`);
 					})
 					.catch(error => console.log("Error loading contacs from backend", error));
