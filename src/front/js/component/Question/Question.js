@@ -24,13 +24,19 @@ const useDebounce = (value, timeout) => {
 };
 
 export const Question = ({ title, options, answer }) => {
+	const { store, actions } = useContext(Context);
 	const [showTextArea, setShowTextArea] = useState(false);
 	const [_answer, setAnswer] = useState(answer || {});
 	const debouncedAnswer = useDebounce(_answer, 2000);
 	useEffect(
 		() => {
-			if (_answer.id) console.log("put answer", _answer);
-			else console.log("post answer", _answer);
+			if (_answer.id) {
+				console.log("put answer", _answer);
+				actions.updateAnswer(_answer);
+			} else {
+				console.log("post answer", _answer);
+				actions.createAnswer(_answer);
+			}
 		},
 		[debouncedAnswer]
 	);

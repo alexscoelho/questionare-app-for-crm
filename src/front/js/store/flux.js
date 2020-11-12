@@ -93,13 +93,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then(data => console.log(data))
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
-			updateInterview: (interviewId, interview) => {
+			updateInterview: payload => {
 				const store = getStore();
-				fetch(`${process.env.BACKEND_URL}/api/contact/${store.currentContact.id}/interview/${interviewId}`, {
-					method: "PUT",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(interview)
-				})
+				fetch(
+					`${process.env.BACKEND_URL}/api/contact/${store.currentContact.id}/interview/${store.interview.id}`,
+					{
+						method: "PUT",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify(payload)
+					}
+				)
 					.then(response => response.json())
 					.then(data => console.log(data))
 					.catch(error => console.log("Error loading contacs from backend", error));
@@ -149,6 +152,40 @@ const getState = ({ getStore, getActions, setStore }) => {
 						setStore({ interview: actions.sanitazeInterview(data) });
 						history.push(`/contact/${params.contactId}/interview/${data.id}`);
 					})
+					.catch(error => console.log("Error loading contacs from backend", error));
+			},
+
+			createAnswer: _answer => {
+				const store = getStore();
+				const actions = getActions();
+				fetch(`${process.env.BACKEND_URL}/api/interview/answer`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						comments: _answer.comments,
+						interview_id: store.interview.id,
+						option_id: _answer.option_id
+					})
+				})
+					.then(response => response.json())
+					.then(data => console.log(data))
+					.catch(error => console.log("Error loading contacs from backend", error));
+			},
+
+			updateAnswer: _answer => {
+				const store = getStore();
+				const actions = getActions();
+				fetch(`${process.env.BACKEND_URL}/api/interview/answer/${_answer.id}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						comments: _answer.comments,
+						interview_id: _answer.interview_id,
+						option_id: _answer.option_id
+					})
+				})
+					.then(response => response.json())
+					.then(data => console.log(data))
 					.catch(error => console.log("Error loading contacs from backend", error));
 			}
 		}

@@ -30,12 +30,17 @@ def edit_interview(contact_id,interview_id):
     if interview1 is None:
         raise APIException('No interview with that id')
 
-    interview1.status = body['status']
-    interview1.ending_time = datetime.utcnow()
+    if "status" in body:
+        interview1.status = body['status']
+        interview1.ending_time = datetime.utcnow()
+        new_contact_activity(contact_id,"Interview updated to " + body['status'])
+
+    if "scheduled_time" in body:
+        interview1.status = "DRAFT"
+        interview1.scheduled_time = body['scheduled_time']
+        new_contact_activity(contact_id,"Interview reschedule to" + body['scheduled_time'])
+        
     db.session.commit() 
-
-    new_contact_activity(contact_id,"interview updated to " + body['status'])
-
 
     return interview1.serialize(), 200
 
@@ -89,7 +94,7 @@ def create_interview(contact_id):
         new_contact_activity(contact_id,"Interview rescheduled for"+ body['scheduled_time'])
     else:
         new_contact_activity(contact_id,"Interview started")
-        interview1.status = 'POSPONED'
+        interview1.status = 'DRAFT'
         interview1.scheduled_time = body['scheduled_time']
     db.session.add(interview1)
     db.session.commit()
@@ -102,7 +107,7 @@ def create_interview(contact_id):
     return interview1.serialize_big(), 200
     
         
-@api.route('/interview/answer', methods=['POST']) 
+@api.route('/interview//answer', methods=['POST']) 
 def create_answer():
     body = request.get_json()
 
@@ -122,7 +127,7 @@ def create_answer():
     db.session.add(answer1)
     db.session.commit()
     update_interview_score(body['interview_id'])
-    return "ok", 200
+    return answer1.serialize(), 200
 
 @api.route('/interview/answer/<int:answer_id>', methods=['PUT', 'GET']) 
 def modify_answer(answer_id):
@@ -136,11 +141,11 @@ def modify_answer(answer_id):
     if answer1 is None:
         raise APIException('No answer with that id')
 
-    if "comments" in answer1:
+    if "comments" in body:
         answer1.comments = body['comments']
-    if "option_id" in answer1:
+    if "option_id" in body:
         answer1.option_id  = body['option_id']
-    if "value" in answer1:
+    if "value" in body:
         answer1.value = option.value
     db.session.commit()
     update_interview_score(answer1.interview_id)
