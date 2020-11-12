@@ -8,7 +8,7 @@ export const PendingInterviews = () => {
 	const { store, actions } = useContext(Context);
 	const history = useHistory();
 
-	const tableHeaders = ["Contact Name", "Starting Time", "Status"];
+	const tableHeaders = ["Contact Name", "Scheduled Time", "Status", "Score", "Contact Attempts"];
 
 	useEffect(() => {
 		if (!store.interviews) actions.getNextInterviews({ status: "DRAFT" });

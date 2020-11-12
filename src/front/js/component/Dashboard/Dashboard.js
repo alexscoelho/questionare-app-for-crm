@@ -31,6 +31,8 @@ export const Dashboard = () => {
 					history.push("/pending/interviews");
 				})
 				.catch(error => setMessage({ label: error.message || error, type: "danger" }));
+
+		if (alert.callTo === "contactList") history.push("/candidatelist");
 	};
 	return (
 		<Container fluid>
