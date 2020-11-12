@@ -12,7 +12,8 @@ export const InterviewActions = () => {
 	const [date, setDate] = useState("");
 
 	const handleSubmit = () => {
-		actions.updateInterview({ schedule_time: date });
+		actions.updateInterview({ scheduled_time: date });
+		console.log("datetime", date);
 	};
 	return (
 		<Navbar fixed="bottom" className="justify-content-end">

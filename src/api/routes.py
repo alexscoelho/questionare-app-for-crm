@@ -26,22 +26,22 @@ def edit_interview(contact_id,interview_id):
 
    
     interview1 = Interview.query.get(interview_id)
-
+    print('test1')
     if interview1 is None:
         raise APIException('No interview with that id')
-
+    print('test2')
     if "status" in body:
         interview1.status = body['status']
         interview1.ending_time = datetime.utcnow()
         new_contact_activity(contact_id,"Interview updated to " + body['status'])
-
+    print('test3')
     if "scheduled_time" in body:
         interview1.status = "DRAFT"
         interview1.scheduled_time = body['scheduled_time']
         new_contact_activity(contact_id,"Interview reschedule to" + body['scheduled_time'])
-        
+    print('test4')  
     db.session.commit() 
-
+    print('test5')
     return interview1.serialize(), 200
 
 
@@ -121,7 +121,6 @@ def create_answer():
         interview_id=body['interview_id'], 
         option_id=body['option_id'], 
         value=option.value
-        
     )
 
     db.session.add(answer1)
