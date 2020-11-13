@@ -31,8 +31,9 @@ class Contact(db.Model):
     last_name = db.Column(db.String(80), unique=False, nullable=False)
     deals = db.relationship('Deal', backref='contact', lazy=True)
     created_at = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
-    
-    
+    email = db.Column(db.String(80), unique=False, nullable=False)
+    phone = db.Column(db.String(80), unique=False, nullable=False)
+    city = db.Column(db.String(80), unique=False, nullable=False)
 
     def __repr__(self):
         return '<Contact %r>' % self.id
@@ -43,7 +44,10 @@ class Contact(db.Model):
             "first_name": self.first_name,
             "last_name": self.last_name,
             "deals": [a.serialize() for a in self.deals],
-            "created_at": self.created_at
+            "created_at": self.created_at,
+            "email": self.email,
+            "phone": self.phone,
+            "city": self.city,
         }
 
     def serialize_small(self):
@@ -51,7 +55,11 @@ class Contact(db.Model):
             "id": self.id,
             "first_name": self.first_name,
             "last_name": self.last_name,
-            "created_at": self.created_at
+            "created_at": self.created_at,
+            "created_at": self.created_at,
+            "email": self.email,
+            "phone": self.phone,
+            "city": self.city,
         }
 
 
@@ -89,8 +97,6 @@ class Deal(db.Model):
     def serialize_small(self):
         return {
             "id": self.id,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
             "interview_status": self.interview_status,
             "approved_status": self.approved_status,
             "communication_status": self.communication_status,

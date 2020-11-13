@@ -105,48 +105,46 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then(data => console.log(data))
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
-			updateInterview: payload => {
+			updateInterview: async payload => {
 				const store = getStore();
-				fetch(`${process.env.BACKEND_URL}/api/deal/${store.currentDeal.id}/interview/${store.interview.id}`, {
-					method: "PUT",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(payload)
-				})
-					.then(response => response.json())
-					.then(data => console.log(data))
-					.catch(error => console.log("Error loading contacs from backend", error));
+				const response = await fetch(
+					`${process.env.BACKEND_URL}/api/deal/${store.currentDeal.id}/interview/${store.interview.id}`,
+					{
+						method: "PUT",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify(payload)
+					}
+				);
+				const data = await response.json();
+				return data;
 			},
 			redirectNextInterview: () =>
 				new Promise((resolve, reject) => {
 					const store = getStore();
 					fetch(`${process.env.BACKEND_URL}/api/agent/${store.agent.id}/deal/next`)
 						.then(async response => {
-							console.log("response:", response);
 							if (response.status === 200) return await response.json();
 							else if (response.status === 400) {
-								console.log("entro al 400");
 								const error = await response.json();
 								throw new Error(error.message);
 							} else {
 								throw new Error("imposible to retrieve an interview for this agent");
 							}
 						})
-
 						.then(data => {
 							setStore({ currentDeal: data });
-							console.log("no deberia");
+
 							resolve(data);
 						})
 						.catch(error => {
 							reject(error);
-							console.log("Error loading contacs from backend", error);
 						});
 				}),
 
-			startInterview: (history, params, formData) => {
+			startInterview: async (history, params, formData) => {
 				const store = getStore();
 				const actions = getActions();
-				fetch(`${process.env.BACKEND_URL}/api/deal/${store.currentDeal.id}/interview`, {
+				const response = await fetch(`${process.env.BACKEND_URL}/api/deal/${store.currentDeal.id}/interview`, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
@@ -155,8 +153,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 						scheduled_time: formData ? formData.dateTime : null
 					})
-				})
-					.then(response => response.json())
+				});
+				const data = await response
+					.json()
 					.then(data => {
 						setStore({ interview: actions.sanitazeInterview(data) });
 						history.push(`/deal/${params.dealId}/interview/${data.id}`);

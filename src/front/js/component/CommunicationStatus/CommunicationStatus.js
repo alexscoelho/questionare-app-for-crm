@@ -5,7 +5,7 @@ import { Context } from "../../store/appContext";
 import "react-datetime/css/react-datetime.css";
 import Datetime from "react-datetime";
 
-import { Container, Col, Row, Card, Button, Form } from "react-bootstrap/";
+import { Container, Col, Row, Card, Button, Form, Alert } from "react-bootstrap/";
 import { InformationCard } from "../InformationCard/InformationCard.js";
 
 export const CommunicationStatus = () => {
@@ -13,6 +13,7 @@ export const CommunicationStatus = () => {
 	const [formData, setFormData] = useState({});
 	const history = useHistory();
 	const params = useParams();
+	const [message, setMessage] = useState({ label: "", type: "hidden" });
 	const buttonMessages = [
 		{ label: "No answer", value: "no_answer" },
 		{ label: "Answered but not available", value: "no_available" },
@@ -22,7 +23,6 @@ export const CommunicationStatus = () => {
 	];
 	const [showTextArea, setShowTextArea] = useState(false);
 
-	console.log("communicationStatus", store);
 	// useEffect(() => {
 
 	// 	if (!store.interview) {
@@ -33,7 +33,9 @@ export const CommunicationStatus = () => {
 
 	const submitHandler = () => {
 		if (formData.selected === "start_interview") {
-			actions.startInterview(history, params);
+			actions
+				.startInterview(history, params)
+				.catch(error => setMessage({ label: "Unable to submit the interview", type: "danger" }));
 		} else if (
 			formData.selected === "no_answer" ||
 			formData.selected === "no_available" ||
@@ -67,6 +69,11 @@ export const CommunicationStatus = () => {
 
 	return (
 		<Container fluid>
+			{message.type != "hidden" && (
+				<Alert variant={message.type} className="event-message fixed-alert">
+					{message.label}
+				</Alert>
+			)}
 			<Row>
 				<Col md={8}>
 					<p>Please take some time to call the candidate and let us know.</p>

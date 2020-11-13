@@ -3,26 +3,37 @@ import { Context } from "../store/appContext";
 import "react-datetime/css/react-datetime.css";
 import Datetime from "react-datetime";
 import "../../styles/InterviewActions.scss";
+import { useHistory } from "react-router-dom";
 
-import { Button, Navbar } from "react-bootstrap/";
+import { Button, Navbar, Alert } from "react-bootstrap/";
 
 export const InterviewActions = () => {
 	const { store, actions } = useContext(Context);
+	const history = useHistory();
 	const [pickDate, setPickDate] = useState();
 	const [date, setDate] = useState("");
+	const [message, setMessage] = useState({ label: "", type: "hidden" });
 
 	const handleSubmit = () => {
 		actions.updateInterview({ scheduled_time: date });
-		console.log("datetime", date);
 	};
 	return (
 		<Navbar fixed="bottom" className="justify-content-end">
-			<Button style={{ marginRight: 5 }} variant="secondary">
-				Discard
-			</Button>
-			<Button onClick={() => setPickDate(true)} style={{ marginRight: 5 }} variant="secondary">
-				Re-schedule
-			</Button>
+			{message.type != "hidden" && (
+				<Alert variant={message.type} className="event-message fixed-alert">
+					{message.label}
+				</Alert>
+			)}
+			{!pickDate && (
+				<>
+					<Button style={{ marginRight: 5 }} variant="secondary">
+						Discard
+					</Button>
+					<Button onClick={() => setPickDate(true)} style={{ marginRight: 5 }} variant="secondary">
+						Re-schedule
+					</Button>
+				</>
+			)}
 			{pickDate && (
 				<>
 					<label style={{ marginRight: 5 }} htmlFor="schedule">
@@ -38,16 +49,23 @@ export const InterviewActions = () => {
 						Send
 					</Button>
 					<Button style={{ marginRight: 5 }} onClick={() => setPickDate(false)}>
-						Hide
+						Undo
 					</Button>
 				</>
 			)}
-			<Button
-				onClick={() => actions.updateInterview({ status: "INTERVIEWED" })}
-				style={{ marginRight: 5 }}
-				variant="success">
-				Submit Interview
-			</Button>
+			{!pickDate && (
+				<Button
+					onClick={() => {
+						actions
+							.updateInterview({ status: "INTERVIEWED" })
+							.then(data => history.push("/"))
+							.catch(error => setMessage({ label: "Unable to submit the interview", type: "danger" }));
+					}}
+					style={{ marginRight: 5 }}
+					variant="success">
+					Submit Interview
+				</Button>
+			)}
 		</Navbar>
 	);
 };
