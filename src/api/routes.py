@@ -9,6 +9,7 @@ from flask_jwt_simple import (
     jwt_required, create_jwt, get_jwt_identity
 )
 
+
 api = Blueprint('api', __name__)
 
 

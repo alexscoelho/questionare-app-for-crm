@@ -31,7 +31,10 @@ export const CommunicationStatus = () => {
 
 	const submitHandler = () => {
 		if (formData.selected === "start_interview") {
-			actions.startInterview(params.dealId).catch(e => setFormStatus({ status: "danger", message: e.message }));
+			actions
+				.startInterview(params.dealId)
+				.then(interview => history.push(`/deal/${interview.deal_id}/interview/${interview.id}`))
+				.catch(e => setFormStatus({ status: "danger", message: e.message }));
 		} else if (
 			formData.selected === "no_answer" ||
 			formData.selected === "not_available" ||

@@ -10,6 +10,7 @@ export const PrivateRoute = ({ children, ...rest }) => {
 	if (!store || !store.token) {
 		history.push("/login");
 		return "Redirecting";
+		console.log("Hello");
 	}
 	return <Route {...rest}>{children}</Route>;
 };
