@@ -154,13 +154,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 						scheduled_time: formData ? formData.dateTime : null
 					})
 				});
-				const data = await response
-					.json()
-					.then(data => {
-						setStore({ interview: actions.sanitazeInterview(data) });
-						history.push(`/deal/${params.dealId}/interview/${data.id}`);
-					})
-					.catch(error => console.log("Error loading contacs from backend", error));
+				const data = await response.json();
+				// .then(data => {
+				// 	setStore({ interview: actions.sanitazeInterview(data) });
+				// 	history.push(`/deal/${params.dealId}/interview/${data.id}`);
+				// })
+				// .catch(error => console.log("Error loading contacs from backend", error));
 			},
 
 			createAnswer: async _answer => {

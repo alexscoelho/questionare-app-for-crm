@@ -35,7 +35,11 @@ export const CommunicationStatus = () => {
 		if (formData.selected === "start_interview") {
 			actions
 				.startInterview(history, params)
-				.catch(error => setMessage({ label: "Unable to submit the interview", type: "danger" }));
+				.then(data => {
+					setStore({ interview: actions.sanitazeInterview(data) });
+					history.push(`/deal/${params.dealId}/interview/${data.id}`);
+				})
+				.catch(error => setMessage({ label: error.message || error, type: "danger" }));
 		} else if (
 			formData.selected === "no_answer" ||
 			formData.selected === "no_available" ||
@@ -69,13 +73,13 @@ export const CommunicationStatus = () => {
 
 	return (
 		<Container fluid>
-			{message.type != "hidden" && (
-				<Alert variant={message.type} className="event-message fixed-alert">
-					{message.label}
-				</Alert>
-			)}
 			<Row>
 				<Col md={8}>
+					{message.type != "hidden" && (
+						<Alert variant={message.type} className="event-message ">
+							{message.label}
+						</Alert>
+					)}
 					<p>Please take some time to call the candidate and let us know.</p>
 					<h1>What happened?</h1>
 
