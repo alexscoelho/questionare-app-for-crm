@@ -16,7 +16,7 @@ export const InterviewList = () => {
 
 	useEffect(
 		() => {
-			if (!store.interviews && store.agent) actions.getNextInterviews({ status: query.status });
+			if (!store.interviews && store.agent) actions.getInterviews({ status: query.status });
 		},
 		[store.agent]
 	);

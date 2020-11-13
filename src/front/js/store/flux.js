@@ -95,8 +95,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				};
 			},
-			getNextInterviews: async (options = {}) => {
-				const { status } = options;
+			getInterviews: async (options = {}) => {
+				const { status = "" } = options;
 				const store = getStore();
 				const actions = getActions();
 				const data = await actions.fetch(
@@ -154,7 +154,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				});
 				data = actions.sanitazeInterview(data);
 				setStore({ interview: data });
-				history.push(`/deal/${dealId}/interview/${data.id}`);
 				return data;
 			},
 

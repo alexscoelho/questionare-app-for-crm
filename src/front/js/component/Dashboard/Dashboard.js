@@ -24,12 +24,18 @@ export const Dashboard = () => {
 		REJECTED: [],
 		NOT_INSTERESTED: []
 	});
+	const [interviews, setInterviews] = useState({
+		PENDING: [],
+		DRAFT: [],
+		POSTPONED: [],
+		COMPLETED: []
+	});
 	const [message, setMessage] = useState({ label: "", type: "hidden" });
 	const steps = [
-		{ message: `Scheduled interviews`, link: "View all", callTo: "scheduled" },
-		{ message: `Pending interviews`, link: "Start next Int.", callTo: "new" },
-		{ message: `Unfinished`, link: "View all", callTo: "incomplete" },
-		{ message: `Finished Interviews`, link: "View All", callTo: "dealList" }
+		{ message: `Scheduled interviews`, link: "View all", callTo: "scheduled", stage: "POSTPONED" },
+		{ message: `Pending interviews`, link: "Start next Int.", callTo: "new", stage: "PENDING" },
+		{ message: `Unfinished`, link: "View all", callTo: "incomplete", stage: "DRAFT" },
+		{ message: `Finished Interviews`, link: "View All", callTo: "dealList", stage: "COMPLETED" }
 	];
 
 	const handleStepClick = alert => {
@@ -41,7 +47,7 @@ export const Dashboard = () => {
 				.catch(error => setMessage({ label: error.message || error, type: "danger" }));
 		if (alert.callTo === "incomplete")
 			actions
-				.getNextInterviews({ status: "DRAFT" })
+				.getInterviews({ status: "DRAFT" })
 				.then(interview => {
 					history.push("/interviews?status=DRAFT");
 				})
@@ -52,7 +58,6 @@ export const Dashboard = () => {
 
 	useEffect(
 		() => {
-			console.log("Candidates", store.candidates);
 			if (!store.candidates) actions.getDeals();
 			else if (Array.isArray(store.candidates))
 				setDeals({
@@ -60,6 +65,19 @@ export const Dashboard = () => {
 					APPROVED: store.candidates.filter(c => c.status == "APPROVED"),
 					REJECTED: store.candidates.filter(c => c.status == "REJECTED"),
 					NOT_INSTERESTED: store.candidates.filter(c => c.status == "NOT_INSTERESTED")
+				});
+		},
+		[store.candidates]
+	);
+	useEffect(
+		() => {
+			if (!store.interviews) actions.getInterviews();
+			else if (Array.isArray(store.interviews))
+				setInterviews({
+					PENDING: store.candidates.filter(c => c.status == "PENDING"),
+					DRAFT: store.candidates.filter(c => c.status == "DRAFT"),
+					POSTPONED: store.candidates.filter(c => c.status == "POSTPONED"),
+					COMPLETED: store.candidates.filter(c => c.status == "COMPLETED")
 				});
 		},
 		[store.candidates]
@@ -79,7 +97,7 @@ export const Dashboard = () => {
 							<Card.Body className="p-1">
 								<Card.Text>
 									<Badge className="mr-1" variant="secondary">
-										0
+										{interviews[s.stage].length}
 									</Badge>
 									{s.message}
 								</Card.Text>
@@ -101,7 +119,9 @@ export const Dashboard = () => {
 								key={deal.id}
 								className="hovered"
 								onClick={() => {
-									if (deal.status == "PENDING") history.push(`/deal/${deal.id}`);
+									if (deal.status == "PENDING") {
+										history.push(`/deal/${deal.id}`);
+									}
 								}}>
 								<Card.Body className="p-1">
 									<Card.Title>

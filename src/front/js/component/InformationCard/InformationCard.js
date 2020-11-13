@@ -9,21 +9,26 @@ export const InformationCard = ({ deal }) => {
 	return (
 		<Card style={{ width: "22rem" }} className="ml-auto">
 			<Card.Body>
-				<Card.Title>Candidate Information</Card.Title>
+				<Card.Title>Deal Information</Card.Title>
 				<Card.Text>
-					<b>First Name:</b> {deal.first_name}
-				</Card.Text>
-				<Card.Text>
-					<b>Last Name:</b> {deal.last_name}
-				</Card.Text>
-				<Card.Text>
-					<b>Email:</b> {deal.last_name}
-				</Card.Text>
-				<Card.Text>
-					<b>Phone:</b> {deal.last_name}
-				</Card.Text>
-				<Card.Text>
-					<b>City:</b> {deal.last_name}
+					<p className="m-0">
+						<strong>Status:</strong> {deal.communication_status}
+					</p>
+					<p className="m-0">
+						<strong>First Name:</strong> {deal.contact.first_name}
+					</p>
+					<p className="m-0">
+						<strong>Last Name:</strong> {deal.contact.last_name}
+					</p>
+					<p className="m-0">
+						<strong>Email:</strong> {deal.contact.email}
+					</p>
+					<p className="m-0">
+						<strong>Phone:</strong> {deal.contact.phone}
+					</p>
+					<p className="m-0">
+						<strong>Contact Attempts:</strong> {deal.deal_attemps}
+					</p>
 				</Card.Text>
 				<Alert variant="light" className="call-status">
 					{deal.contacted_at} <br />

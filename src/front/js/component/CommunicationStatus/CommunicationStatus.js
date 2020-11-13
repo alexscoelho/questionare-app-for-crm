@@ -5,7 +5,7 @@ import { Context } from "../../store/appContext";
 import "react-datetime/css/react-datetime.css";
 import Datetime from "react-datetime";
 
-import { Container, Col, Row, Alert, Button, Form } from "react-bootstrap";
+import { Container, Col, Row, Alert, Button, Form, Card } from "react-bootstrap";
 import { InformationCard } from "../InformationCard/InformationCard.js";
 
 export const CommunicationStatus = () => {
@@ -14,6 +14,7 @@ export const CommunicationStatus = () => {
 	const [formStatus, setFormStatus] = useState({ status: "idle", message: "" });
 	const history = useHistory();
 	const params = useParams();
+	const [message, setMessage] = useState({ label: "", type: "hidden" });
 	const buttonMessages = [
 		{ label: "No answer", value: "no_answer" },
 		{ label: "Answered but not available", value: "not_available" },
@@ -24,10 +25,8 @@ export const CommunicationStatus = () => {
 	const [showTextArea, setShowTextArea] = useState(false);
 
 	useEffect(() => {
-		if (!store.currentDeal) {
-			console.log("communicationStatus", store);
-			actions.getDeal(params.dealId);
-		}
+		console.log("communicationStatus", store);
+		actions.getDeal(params.dealId);
 	}, []);
 
 	const submitHandler = () => {
@@ -39,7 +38,7 @@ export const CommunicationStatus = () => {
 			formData.selected === "not_interested"
 		) {
 			actions
-				.updateDeal(store.currentDeal.id, {
+				.updateDeal(params.dealId, {
 					communication_status: formData.selected.toUpperCase()
 				})
 				.then(deal => history.push("/"))
@@ -49,6 +48,7 @@ export const CommunicationStatus = () => {
 			else
 				actions
 					.startInterview(params.dealId, formData)
+					.then(data => history.push(`/`))
 					.catch(e => setFormStatus({ status: "danger", message: e.message }));
 		}
 	};
