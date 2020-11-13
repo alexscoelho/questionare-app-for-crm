@@ -297,10 +297,10 @@ def get_single_deal(deal_id):
     
     if request.method == 'PUT':
         body = request.get_json()
-        if "first_name" in body:
-            deal1.first_name = body['first_name']
-        if "last_name" in body:
-            deal1.last_name = body['last_name']
+
+        if "note" in body:
+            new_deal_activity(deal_id,body['note'])
+
         if "status" in body:
             deal1.status = body['status']
         if "approved_status" in body:    
@@ -316,6 +316,7 @@ def get_single_deal(deal_id):
 
         new_deal_activity(deal_id,"deal modified")
         return deal1.serialize(), 200
+
 
 
 

@@ -1,11 +1,23 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import "./InformationCard.scss";
 import moment from "moment";
+import { Context } from "../../store/appContext";
 import PropTypes from "prop-types";
-import { Card, Button, Alert } from "react-bootstrap/";
+import { Card, Button, Alert, Popover } from "react-bootstrap/";
 
 export const InformationCard = ({ deal }) => {
+	const { store, actions } = useContext(Context);
 	if (!deal) return "loading...";
+	const [addNote, setAddNote] = useState(false);
+	const [noteContent, setNoteContent] = useState("");
+	const [formStatus, setFormStatus] = useState({ status: "idle", message: "" });
+	const handleClick = () => {
+		actions
+			.updateDeal(deal.id, { note: noteContent })
+			.then(deal => actions.getDeals(deal.id))
+			.catch(e => setFormStatus({ status: "danger", message: e.message }));
+		setNoteContent("");
+	};
 	return (
 		<Card style={{ width: "22rem" }} className="ml-auto">
 			<Card.Body>
@@ -40,10 +52,32 @@ export const InformationCard = ({ deal }) => {
 									<h5 className="m-0">{a.details}</h5>
 									<span>{moment(a.created_at).fromNow()}</span>
 								</li>
+								// <Popover key={a.id} id="popover-basic">
+								// 	<Popover.Title as="h3">Popover right</Popover.Title>
+								// 	<Popover.Content>
+								// 		And heres some <strong>amazing</strong> content. Its very engaging. right?
+								// 	</Popover.Content>
+								// </Popover>
 							);
 						})}
 				</Alert>
-				<Card.Link href="#">Add new note</Card.Link>
+				<Card.Link onClick={() => setAddNote(true)} href="#">
+					Add new note
+				</Card.Link>
+				{formStatus.status == "danger" && <Alert variant="danger">{formStatus.message}</Alert>}
+				{addNote && (
+					<>
+						<input
+							onChange={event => setNoteContent(event.target.value)}
+							style={{ marginLeft: 5 }}
+							type="text"
+							value={noteContent}
+						/>
+						<button style={{ marginLeft: 5 }} onClick={() => handleClick()}>
+							Save
+						</button>
+					</>
+				)}
 			</Card.Body>
 		</Card>
 	);

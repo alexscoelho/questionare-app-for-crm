@@ -112,12 +112,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 				});
 				const store = getStore();
 				if (store.candidates)
-					setStore({
-						candidates: store.candidates.map(c => {
-							if (c.id == data.id) return data;
-							else return c;
-						})
-					});
+					setStore(
+						{
+							candidates: store.candidates.map(c => {
+								if (c.id == data.id) return data;
+								else return c;
+							})
+						},
+						{ currentDeal: data }
+					);
 				return data;
 			},
 			updateInterview: async payload => {
