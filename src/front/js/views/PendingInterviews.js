@@ -10,9 +10,12 @@ export const PendingInterviews = () => {
 
 	const tableHeaders = ["Contact Name", "Scheduled Time", "Status", "Score", "Contact Attempts"];
 
-	useEffect(() => {
-		if (!store.interviews) actions.getNextInterviews({ status: "DRAFT" });
-	}, []);
+	useEffect(
+		() => {
+			if (!store.interviews && store.agent) actions.getNextInterviews({ status: "DRAFT" });
+		},
+		[store.agent]
+	);
 
 	if (!store.interviews) return "loading...";
 	return (

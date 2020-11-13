@@ -15,7 +15,7 @@ export const TableRow = ({ data, onToggle, handleRedirect }) => {
 			<td>{data.first_name || data.contact.contact_attemps}</td>
 			<td>{data.first_name}</td>
 			<td>
-				<a href="" onClick={() => handleRedirect}>
+				<a href="#" onClick={() => handleRedirect()}>
 					details <i className="far fa-arrow-alt-circle-right" />
 				</a>
 			</td>

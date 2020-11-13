@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./Login.scss";
+import { Context } from "../../store/appContext";
+import { useHistory } from "react-router-dom";
 
 import { Form, Button, Container, Row, Col } from "react-bootstrap/";
 
 export const Login = () => {
+	const { store, actions } = useContext(Context);
+	const history = useHistory();
+	if (store && store.agent) history.push("/");
 	return (
 		<Container className="login-form">
 			<Row className="justify-content-md-center">
@@ -15,7 +20,7 @@ export const Login = () => {
 						<Form.Group controlId="formBasicPassword">
 							<Form.Control type="password" placeholder="Password" />
 						</Form.Group>
-						<Button variant="primary" type="submit" block>
+						<Button onClick={() => actions.login()} variant="primary" type="submit" block>
 							Login
 						</Button>
 					</Form>

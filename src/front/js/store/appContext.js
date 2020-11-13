@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import getState from "./flux.js";
+import { useHistory } from "react-router-dom";
 
 // Don't change, here is where we initialize our context, by default it's just going to be null.
 export const Context = React.createContext(null);
@@ -8,16 +9,20 @@ export const Context = React.createContext(null);
 // https://github.com/4GeeksAcademy/react-hello-webapp/blob/master/src/js/layout.js#L35
 const injectContext = PassedComponent => {
 	const StoreWrapper = props => {
+		const history = useHistory();
 		//this will be passed as the contenxt value
 		const [state, setState] = useState(
 			getState({
 				getStore: () => state.store,
 				getActions: () => state.actions,
-				setStore: updatedStore =>
+				setStore: updatedStore => {
+					const store = Object.assign(state.store, updatedStore);
 					setState({
-						store: Object.assign(state.store, updatedStore),
+						store,
 						actions: { ...state.actions }
-					})
+					});
+					localStorage.setItem("breathcode-interviews-session", JSON.stringify(store));
+				}
 			})
 		);
 
@@ -29,6 +34,7 @@ const injectContext = PassedComponent => {
 			 * store, instead use actions, like this:
 			 **/
 			state.actions.getContacts();
+			state.actions.retrieveSession(history);
 		}, []);
 
 		// The initial value for the context is not null anymore, but the current state of this component,

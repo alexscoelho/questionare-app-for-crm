@@ -4,6 +4,7 @@ import { Context } from "../../store/appContext";
 import { useHistory } from "react-router-dom";
 
 import { Container, Alert, Col, Row } from "react-bootstrap/";
+import { Private } from "../Private/Private.js";
 
 export const Dashboard = () => {
 	const { store, actions } = useContext(Context);
@@ -36,6 +37,7 @@ export const Dashboard = () => {
 	};
 	return (
 		<Container fluid>
+			<Private />
 			<h1>Agent: Bob Dylan</h1>
 			{message.type != "hidden" && (
 				<Alert variant={message.type} className="event-message">

@@ -15,6 +15,7 @@ import { CommunicationStatus } from "./component/CommunicationStatus/Communicati
 import { InterviewCall } from "./component/InterviewCall/InterviewCall.js";
 import { CandidateList } from "./component/CandidateList/CandidateList.js";
 import { PendingInterviews } from "./views/PendingInterviews";
+import { Private } from "./component/Private/Private.js";
 
 //create your first component
 const Layout = () => {
@@ -28,10 +29,11 @@ const Layout = () => {
 				<ScrollToTop>
 					<Navbar />
 					<Switch>
-						<Route exact path="/">
+						<Route exact path="/login">
 							<Login />
 						</Route>
-						<Route exact path="/dashboard">
+
+						<Route exact path="/">
 							<Dashboard />
 						</Route>
 						<Route exact path="/contact/:contactId">

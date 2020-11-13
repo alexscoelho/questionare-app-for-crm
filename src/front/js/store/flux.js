@@ -6,7 +6,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			interview: null,
 			interviews: null,
 			currentContact: null,
-			agent: { id: 1, time_zone: "America/New_York" },
+			agent: null,
 			questionnaireId: 1
 		},
 		actions: {
@@ -17,6 +17,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then(response => response.json())
 					.then(data => setStore({ candidates: data }))
 					.catch(error => console.log("Error loading contacs from backend", error));
+			},
+			login: async () => {
+				const store = getStore();
+				const actions = getActions();
+				const agent = { id: 1, time_zone: "America/New_York" };
+				setStore({ agent });
+				moment.tz.setDefault(agent.time_zone);
+				return agent;
+			},
+			retrieveSession: history => {
+				const store = localStorage.getItem("breathcode-interviews-session");
+				setStore(JSON.parse(store));
 			},
 
 			getQuestionnaire: id => {
@@ -155,10 +167,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
 
-			createAnswer: _answer => {
+			createAnswer: async _answer => {
 				const store = getStore();
 				const actions = getActions();
-				fetch(`${process.env.BACKEND_URL}/api/interview/answer`, {
+				const response = await fetch(`${process.env.BACKEND_URL}/api/interview/answer`, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
@@ -166,10 +178,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 						interview_id: store.interview.id,
 						option_id: _answer.option_id
 					})
-				})
-					.then(response => response.json())
-					.then(data => console.log(data))
-					.catch(error => console.log("Error loading contacs from backend", error));
+				});
+				const data = await response.json();
+				return data;
 			},
 
 			updateAnswer: _answer => {

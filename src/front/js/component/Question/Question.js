@@ -32,16 +32,16 @@ export const Question = ({ title, options, answer }) => {
 		() => {
 			if (_answer.id) {
 				console.log("put answer", _answer);
-				actions.updateAnswer(_answer);
+				if (!_answer.ignore) actions.updateAnswer(_answer);
 			} else {
 				console.log("post answer", _answer);
-				actions.createAnswer(_answer);
+				actions.createAnswer(_answer).then(data => setAnswer({ ...data, ignore: true }));
 			}
 		},
 		[debouncedAnswer]
 	);
 	const handleChange = updatedData => {
-		setAnswer({ ..._answer, ...updatedData });
+		setAnswer({ ..._answer, ...updatedData, ignore: false });
 	};
 
 	return (

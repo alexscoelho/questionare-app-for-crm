@@ -115,9 +115,9 @@ def create_answer():
 
     if option is None:
         raise APIException('No option with that id')
-    
+
     answer1 = Answer(
-        comments=body['comments'], 
+        comments=body['comments'] if "comments" in body else None, 
         interview_id=body['interview_id'], 
         option_id=body['option_id'], 
         value=option.value

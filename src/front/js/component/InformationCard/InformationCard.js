@@ -2,6 +2,7 @@ import React, { useEffect, useContext } from "react";
 import "./InformationCard.scss";
 import { Context } from "../../store/appContext";
 import { useParams } from "react-router-dom";
+import moment from "moment";
 
 import { Card, Button, Alert } from "react-bootstrap/";
 
@@ -42,7 +43,12 @@ export const InformationCard = p => {
 					{p.contact.contacted_at} <br />
 					{p.contact.communication_status}
 					{p.contact.activities.map(a => {
-						return <li key={a.id}>{a.details}</li>;
+						return (
+							<li key={a.id}>
+								<h5 className="m-0">{a.details}</h5>
+								<span>{moment(a.created_at).fromNow()}</span>
+							</li>
+						);
 					})}
 				</Alert>
 				<Card.Link href="#">Add new note</Card.Link>
