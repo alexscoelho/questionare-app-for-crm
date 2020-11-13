@@ -1,18 +1,22 @@
 import React, { useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { Container, Row, Col, Button } from "react-bootstrap/";
 import { SmartTable, TableRow } from "../component/SmartTable/SmartTable";
 
-export const PendingInterviews = () => {
+function useQuery() {
+	return new URLSearchParams(useLocation().search);
+}
+export const InterviewList = () => {
 	const { store, actions } = useContext(Context);
 	const history = useHistory();
+	const query = useQuery();
 
 	const tableHeaders = ["Deal Name", "Scheduled Time", "Status", "Score", "Deal Attempts"];
 
 	useEffect(
 		() => {
-			if (!store.interviews && store.agent) actions.getNextInterviews({ status: "DRAFT" });
+			if (!store.interviews && store.agent) actions.getNextInterviews({ status: query.status });
 		},
 		[store.agent]
 	);

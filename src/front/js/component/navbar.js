@@ -8,9 +8,17 @@ export const Navbar = () => {
 				<span className="navbar-brand mb-0 h1">React Boilerplate</span>
 			</Link>
 			<div className="ml-auto">
-				<Link to="/">
-					<button className="btn btn-primary">Dashboard</button>
-				</Link>
+				<Link to="/">Dashboard</Link>
+				<a
+					href="#"
+					className="ml-4"
+					onClick={e => {
+						e.preventDefault();
+						localStorage.setItem("breathcode-interviews-session", null);
+						window.location.href = "/login";
+					}}>
+					Log out
+				</a>
 			</div>
 		</nav>
 	);

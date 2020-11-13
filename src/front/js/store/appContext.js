@@ -13,15 +13,21 @@ const injectContext = PassedComponent => {
 		//this will be passed as the contenxt value
 		const [state, setState] = useState(
 			getState({
-				getStore: () => state.store,
+				getStore: () => {
+					const _partial = JSON.parse(localStorage.getItem("breathcode-interviews-session"));
+					return { ...state.store, ..._partial };
+				},
 				getActions: () => state.actions,
 				setStore: updatedStore => {
 					const store = Object.assign(state.store, updatedStore);
+					localStorage.setItem(
+						"breathcode-interviews-session",
+						JSON.stringify({ token: store.token, agent: store.agent })
+					);
 					setState({
 						store,
 						actions: { ...state.actions }
 					});
-					localStorage.setItem("breathcode-interviews-session", JSON.stringify(store));
 				}
 			})
 		);
@@ -33,7 +39,6 @@ const injectContext = PassedComponent => {
 			 * you should do your ajax requests or fetch api requests here. Do not use setState() to save data in the
 			 * store, instead use actions, like this:
 			 **/
-			state.actions.getDeals();
 			state.actions.retrieveSession(history);
 		}, []);
 

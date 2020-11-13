@@ -14,8 +14,8 @@ import { Dashboard } from "./component/Dashboard/Dashboard.js";
 import { CommunicationStatus } from "./component/CommunicationStatus/CommunicationStatus.js";
 import { InterviewCall } from "./component/InterviewCall/InterviewCall.js";
 import { CandidateList } from "./component/CandidateList/CandidateList.js";
-import { PendingInterviews } from "./views/PendingInterviews";
-import { Private } from "./component/Private/Private.js";
+import { InterviewList } from "./views/InterviewList";
+import { PrivateRoute } from "./component/PrivateRoute.js";
 
 //create your first component
 const Layout = () => {
@@ -33,27 +33,27 @@ const Layout = () => {
 							<Login />
 						</Route>
 
-						<Route exact path="/">
+						<PrivateRoute exact path="/">
 							<Dashboard />
-						</Route>
-						<Route exact path="/deal/:dealId">
+						</PrivateRoute>
+						<PrivateRoute exact path="/deal/:dealId">
 							<CommunicationStatus />
-						</Route>
-						<Route exact path="/deal/:dealId/interview/:interviewId">
+						</PrivateRoute>
+						<PrivateRoute exact path="/deal/:dealId/interview/:interviewId">
 							<InterviewCall />
-						</Route>
-						<Route exact path="/candidatelist">
+						</PrivateRoute>
+						<PrivateRoute exact path="/deals">
 							<CandidateList />
-						</Route>
-						<Route exact path="/pending/interviews">
-							<PendingInterviews />
-						</Route>
-						<Route exact path="/demo">
+						</PrivateRoute>
+						<PrivateRoute exact path="/interviews">
+							<InterviewList />
+						</PrivateRoute>
+						<PrivateRoute exact path="/demo">
 							<Demo />
-						</Route>
-						<Route exact path="/single/:theid">
+						</PrivateRoute>
+						<PrivateRoute exact path="/single/:theid">
 							<Single />
-						</Route>
+						</PrivateRoute>
 						<Route>
 							<h1>Not found!</h1>
 						</Route>
