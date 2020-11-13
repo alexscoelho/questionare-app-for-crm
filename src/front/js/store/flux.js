@@ -1,63 +1,79 @@
+import moment from "moment-timezone";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			candidates: [],
+			candidates: null,
 			questionnaire: null,
 			interview: null,
 			interviews: null,
 			currentDeal: null,
 			agent: null,
+			token: null,
 			questionnaireId: 1
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
-			getDeals: (opt = {}) => {
-				const { sort = "", score = "" } = opt;
-				fetch(`${process.env.BACKEND_URL}/api/deals?sort=${sort}`)
-					.then(response => response.json())
-					.then(data => setStore({ candidates: data }))
-					.catch(error => console.log("Error loading contacs from backend", error));
-			},
-			login: async () => {
+			fetch: async (url, options = {}) => {
 				const store = getStore();
+				const resp = await fetch(url, {
+					...options,
+					headers: {
+						...options.headers,
+						"Content-Type": "application/json",
+						Authorization: "Bearer " + store.token
+					}
+				});
+				if (resp.status === 200) {
+					const data = await resp.json();
+					return data;
+				} else if (resp.status >= 400 && resp.status < 500) {
+					const e = await resp.json();
+					throw new Error(e.message || e.msg || e);
+				} else throw new Error("Request error");
+			},
+			login: async formData => {
+				const resp = await fetch(`${process.env.BACKEND_URL}/api/login`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(formData)
+				});
+				if (resp.status === 200) {
+					const data = await resp.json();
+					setStore({ token: data.token, agent: data.agent });
+					moment.tz.setDefault(agent.time_zone);
+					return agent;
+				} else if (resp.status >= 400 && resp.status < 500) throw await resp.json();
+				else throw new Error("Could not login");
+			},
+			retrieveSession: () => {
+				let store = localStorage.getItem("breathcode-interviews-session");
+				store = JSON.parse(store);
+				setStore({ ...store });
+				if (store && store.agent) moment.tz.setDefault(store.agent.time_zone);
+			},
+			getDeals: async (opt = {}) => {
 				const actions = getActions();
-				const agent = { id: 1, time_zone: "America/New_York" };
-				setStore({ agent });
-				moment.tz.setDefault(agent.time_zone);
-				return agent;
+				const { sort = "", score = "" } = opt;
+				const candidates = await actions.fetch(`${process.env.BACKEND_URL}/api/deals?sort=${sort}`);
+				setStore({ candidates });
 			},
-			retrieveSession: history => {
-				const store = localStorage.getItem("breathcode-interviews-session");
-				setStore(JSON.parse(store));
+			getQuestionnaire: async id => {
+				const actions = getActions();
+				const data = await actions.fetch(`${process.env.BACKEND_URL}/api/questionnaire/${id}`);
+				setStore({ questionnaire: data.questions });
 			},
-
-			getQuestionnaire: id => {
-				fetch(`${process.env.BACKEND_URL}/api/questionnaire/${id}`)
-					.then(response => response.json())
-					.then(data => setStore({ questionnaire: data.questions }))
-					.catch(error => console.log("Error loading contacs from backend", error));
+			getDeal: async id => {
+				const actions = getActions();
+				const data = await actions.fetch(`${process.env.BACKEND_URL}/api/deal/${id}`);
+				setStore({ currentDeal: data });
+				return data;
 			},
-			getDeal: id => {
-				fetch(`${process.env.BACKEND_URL}/api/deal/${id}`)
-					.then(response => response.json())
-					.then(data => setStore({ currentDeal: data }))
-					.catch(error => console.log("Error loading contacs from backend", error));
+			getInterview: async id => {
+				const actions = getActions();
+				const data = await actions.fetch(`${process.env.BACKEND_URL}/api/interview/${id}`);
+				setStore({ interview: actions.sanitazeInterview(data) });
+				return data;
 			},
-			getInterview: id =>
-				new Promise((resolve, reject) => {
-					const store = getStore();
-					const actions = getActions();
-					fetch(`${process.env.BACKEND_URL}/api/interview/${id}`)
-						.then(response => response.json())
-						.then(data => {
-							setStore({ interview: actions.sanitazeInterview(data) });
-							resolve(data);
-						})
-						.catch(error => {
-							reject(error);
-							console.log("Error loading contacs from backend", error);
-						});
-				}),
 			sanitazeInterview: interview => {
 				let questions = interview.questionnaire.questions.map(q => {
 					for (let a in interview.answers) {
@@ -79,120 +95,93 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				};
 			},
-			getNextInterviews: (opt = {}) =>
-				new Promise((resolve, reject) => {
-					const { status } = opt;
-					const store = getStore();
-					fetch(`${process.env.BACKEND_URL}/api/agent/${store.agent.id}/interview/next?status=${status}`)
-						.then(response => response.json())
-						.then(data => {
-							setStore({ interviews: Array.isArray(data) ? data : [] });
-							resolve(data);
-						})
-						.catch(error => {
-							reject(error);
-							console.log("Error loading contacs from backend", error);
-						});
-				}),
-
-			updateDeal: (id, dealBody) => {
-				fetch(`${process.env.BACKEND_URL}/api/deal/${id}`, {
+			getInterviews: async (options = {}) => {
+				const { status = "" } = options;
+				const store = getStore();
+				const actions = getActions();
+				const data = await actions.fetch(
+					`${process.env.BACKEND_URL}/api/agent/${store.agent.id}/interview/next?status=${status}`
+				);
+				setStore({ interviews: Array.isArray(data) ? data : [] });
+			},
+			updateDeal: async (id, dealBody) => {
+				const actions = getActions();
+				const data = await actions.fetch(`${process.env.BACKEND_URL}/api/deal/${id}`, {
 					method: "PUT",
-					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify(dealBody)
-				})
-					.then(response => response.json())
-					.then(data => console.log(data))
-					.catch(error => console.log("Error loading contacs from backend", error));
+				});
+				const store = getStore();
+				if (store.candidates)
+					setStore({
+						candidates: store.candidates.map(c => {
+							if (c.id == data.id) return data;
+							else return c;
+						})
+					});
+				return data;
 			},
 			updateInterview: async payload => {
-				const store = getStore();
-				const response = await fetch(
+				const actions = getActions();
+				const data = await actions.fetch(
 					`${process.env.BACKEND_URL}/api/deal/${store.currentDeal.id}/interview/${store.interview.id}`,
 					{
 						method: "PUT",
-						headers: { "Content-Type": "application/json" },
 						body: JSON.stringify(payload)
 					}
 				);
-				const data = await response.json();
 				return data;
 			},
-			redirectNextInterview: () =>
-				new Promise((resolve, reject) => {
-					const store = getStore();
-					fetch(`${process.env.BACKEND_URL}/api/agent/${store.agent.id}/deal/next`)
-						.then(async response => {
-							if (response.status === 200) return await response.json();
-							else if (response.status === 400) {
-								const error = await response.json();
-								throw new Error(error.message);
-							} else {
-								throw new Error("imposible to retrieve an interview for this agent");
-							}
-						})
-						.then(data => {
-							setStore({ currentDeal: data });
-
-							resolve(data);
-						})
-						.catch(error => {
-							reject(error);
-						});
-				}),
-
-			startInterview: async (history, params, formData) => {
+			redirectNextInterview: async options => {
+				const { status } = options;
+				const actions = getActions();
+				const store = getStore();
+				const data = await actions.fetch(
+					`${process.env.BACKEND_URL}/api/agent/${store.agent.id}/interview/next?status=${status}`
+				);
+				setStore({ currentDeal: data });
+				return data;
+			},
+			startInterview: async (dealId, formData) => {
 				const store = getStore();
 				const actions = getActions();
-				const response = await fetch(`${process.env.BACKEND_URL}/api/deal/${store.currentDeal.id}/interview`, {
+				let data = await actions.fetch(`${process.env.BACKEND_URL}/api/deal/${dealId}/interview`, {
 					method: "POST",
-					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
 						questionnaire_id: store.questionnaireId,
 						agent_id: store.agent.id,
-
 						scheduled_time: formData ? formData.dateTime : null
 					})
 				});
-				const data = await response.json();
-				// .then(data => {
-				// 	setStore({ interview: actions.sanitazeInterview(data) });
-				// 	history.push(`/deal/${params.dealId}/interview/${data.id}`);
-				// })
-				// .catch(error => console.log("Error loading contacs from backend", error));
+				data = actions.sanitazeInterview(data);
+				setStore({ interview: data });
+				return data;
 			},
 
 			createAnswer: async _answer => {
 				const store = getStore();
 				const actions = getActions();
-				const response = await fetch(`${process.env.BACKEND_URL}/api/interview/answer`, {
+				const data = await actions.fetch(`${process.env.BACKEND_URL}/api/interview/answer`, {
 					method: "POST",
-					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
 						comments: _answer.comments,
 						interview_id: store.interview.id,
 						option_id: _answer.option_id
 					})
 				});
-				const data = await response.json();
 				return data;
 			},
 
-			updateAnswer: _answer => {
-				const store = getStore();
+			updateAnswer: async _answer => {
 				const actions = getActions();
-				fetch(`${process.env.BACKEND_URL}/api/interview/answer/${_answer.id}`, {
+				const data = await actions.fetch(`${process.env.BACKEND_URL}/api/interview/answer/${_answer.id}`, {
 					method: "PUT",
-					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
 						comments: _answer.comments,
 						interview_id: _answer.interview_id,
 						option_id: _answer.option_id
 					})
-				})
-					.then(response => response.json())
-					.then(data => console.log(data))
-					.catch(error => console.log("Error loading contacs from backend", error));
+				});
+				return data;
 			}
 		}
 	};

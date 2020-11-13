@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 310506ef1203
+Revision ID: ff3a2153fead
 Revises: 
-Create Date: 2020-11-13 03:12:05.554854
+Create Date: 2020-11-13 09:37:32.053428
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '310506ef1203'
+revision = 'ff3a2153fead'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,10 +22,10 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('email', sa.String(length=120), nullable=False),
     sa.Column('password', sa.String(length=80), nullable=False),
+    sa.Column('role', sa.Enum('AGENT', 'ADMIN', 'READ_ONLY', name='agentroles'), nullable=False),
     sa.Column('time_zone', sa.String(length=120), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email'),
-    sa.UniqueConstraint('time_zone')
+    sa.UniqueConstraint('email')
     )
     op.create_table('contact',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -45,9 +45,9 @@ def upgrade():
     )
     op.create_table('deal',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('interview_status', sa.String(length=80), nullable=False),
-    sa.Column('approved_status', sa.String(length=80), nullable=True),
-    sa.Column('communication_status', sa.String(length=80), nullable=True),
+    sa.Column('name', sa.String(length=100), nullable=False),
+    sa.Column('status', sa.Enum('PENDING', 'APPROVED', 'REJECTED', 'NOT_INTERESTED', name='dealstatus'), nullable=True),
+    sa.Column('communication_status', sa.Enum('NO_ANSWER', 'NOT_AVAILABLE', 'COMPLETE', name='communicationstatus'), nullable=True),
     sa.Column('contacted_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('deal_attemps', sa.Integer(), nullable=True),
     sa.Column('agent_id', sa.Integer(), nullable=True),
@@ -60,7 +60,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('details', sa.String(length=350), nullable=False),
     sa.Column('label', sa.String(length=100), nullable=True),
-    sa.Column('activity_type', sa.String(length=80), nullable=False),
+    sa.Column('activity_type', sa.Enum('NOTE', 'EVENT', name='activitytypes'), nullable=False),
     sa.Column('deal_id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['deal_id'], ['deal.id'], ),
@@ -73,7 +73,7 @@ def upgrade():
     sa.Column('agent_id', sa.Integer(), nullable=False),
     sa.Column('questionnaire_id', sa.Integer(), nullable=False),
     sa.Column('deal_id', sa.Integer(), nullable=False),
-    sa.Column('status', sa.String(length=80), nullable=False),
+    sa.Column('status', sa.Enum('PENDING', 'DRAFT', 'POSTPONED', 'COMPLETED', name='interviewstatus'), nullable=False),
     sa.Column('score_total', sa.Integer(), nullable=True),
     sa.Column('scheduled_time', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['agent_id'], ['agent.id'], ),
