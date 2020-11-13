@@ -12,37 +12,37 @@ export const InformationCard = p => {
 
 	useEffect(() => {
 		console.log("Test1", store);
-		if (!store.currentContact) {
+		if (!store.currentDeal) {
 			console.log("Test2");
-			actions.getContact(params.contactId);
+			actions.getDeal(params.dealId);
 		}
 	}, []);
 
-	if (!p.contact) return "loading...";
-	console.log("contact:", p.contact);
+	if (!p.deal) return "loading...";
+	console.log("deal:", p.deal);
 	return (
 		<Card style={{ width: "22rem" }} className="ml-auto">
 			<Card.Body>
 				<Card.Title>Candidate Information</Card.Title>
 				<Card.Text>
-					<b>First Name:</b> {p.contact.first_name}
+					<b>First Name:</b> {p.deal.first_name}
 				</Card.Text>
 				<Card.Text>
-					<b>Last Name:</b> {p.contact.last_name}
+					<b>Last Name:</b> {p.deal.last_name}
 				</Card.Text>
 				<Card.Text>
-					<b>Email:</b> {p.contact.last_name}
+					<b>Email:</b> {p.deal.last_name}
 				</Card.Text>
 				<Card.Text>
-					<b>Phone:</b> {p.contact.last_name}
+					<b>Phone:</b> {p.deal.last_name}
 				</Card.Text>
 				<Card.Text>
-					<b>City:</b> {p.contact.last_name}
+					<b>City:</b> {p.deal.last_name}
 				</Card.Text>
 				<Alert variant="light" className="call-status">
-					{p.contact.contacted_at} <br />
-					{p.contact.communication_status}
-					{p.contact.activities.map(a => {
+					{p.deal.contacted_at} <br />
+					{p.deal.communication_status}
+					{p.deal.activities.map(a => {
 						return (
 							<li key={a.id}>
 								<h5 className="m-0">{a.details}</h5>

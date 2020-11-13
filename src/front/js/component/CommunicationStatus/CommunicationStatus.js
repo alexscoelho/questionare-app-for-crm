@@ -39,7 +39,7 @@ export const CommunicationStatus = () => {
 			formData.selected === "no_available" ||
 			formData.selected === "no_interested"
 		) {
-			actions.updateContact(store.currentContact.id, {
+			actions.updateDeal(store.currentDeal.id, {
 				communication_status: formData.selected
 			});
 		} else if (formData.selected === "schedule_interview") {
@@ -104,7 +104,7 @@ export const CommunicationStatus = () => {
 					)}
 				</Col>
 				<Col md={4}>
-					<InformationCard contact={store.currentContact} />
+					<InformationCard deal={store.currentDeal} />
 				</Col>
 			</Row>
 		</Container>

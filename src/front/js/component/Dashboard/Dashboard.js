@@ -14,7 +14,7 @@ export const Dashboard = () => {
 	const alerts = [
 		{ message: `You pre-scheduled interviews`, link: "Next Interview", callTo: "scheduled" },
 		{ message: `You have ${3} pending interviews`, link: "Next Interview", callTo: "new" },
-		{ message: `${3} candidates processed`, link: "Review", callTo: "contactList" },
+		{ message: `${3} candidates processed`, link: "Review", callTo: "dealList" },
 		{ message: `You have ${3} interviews started but not finished`, link: "Finish Now", callTo: "incomplete" }
 	];
 
@@ -23,7 +23,7 @@ export const Dashboard = () => {
 		if (alert.callTo === "new")
 			actions
 				.redirectNextInterview()
-				.then(contact => history.push(`/contact/${contact.id}`))
+				.then(deal => history.push(`/deal/${deal.id}`))
 				.catch(error => setMessage({ label: error.message || error, type: "danger" }));
 		if (alert.callTo === "incomplete")
 			actions
@@ -33,7 +33,7 @@ export const Dashboard = () => {
 				})
 				.catch(error => setMessage({ label: error.message || error, type: "danger" }));
 
-		if (alert.callTo === "contactList") history.push("/candidatelist");
+		if (alert.callTo === "dealList") history.push("/candidatelist");
 	};
 	return (
 		<Container fluid>

@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, Agent, Contact, Interview, Questionnaire, Activity,Question, Answer, Option
+from api.models import db, Agent, Deal, Interview, Questionnaire, Activity,Question, Answer, Option
 from api.utils import generate_sitemap, APIException
 from datetime import datetime
 from flask import jsonify
@@ -20,8 +20,8 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
-@api.route('/contact/<int:contact_id>/interview/<int:interview_id>', methods=['PUT'])
-def edit_interview(contact_id,interview_id):
+@api.route('/deal/<int:deal_id>/interview/<int:interview_id>', methods=['PUT'])
+def edit_interview(deal_id,interview_id):
     body = request.get_json()
 
    
@@ -33,12 +33,12 @@ def edit_interview(contact_id,interview_id):
     if "status" in body:
         interview1.status = body['status']
         interview1.ending_time = datetime.utcnow()
-        new_contact_activity(contact_id,"Interview updated to " + body['status'])
+        new_deal_activity(deal_id,"Interview updated to " + body['status'])
     print('test3')
     if "scheduled_time" in body:
         interview1.status = "DRAFT"
         interview1.scheduled_time = body['scheduled_time']
-        new_contact_activity(contact_id,"Interview reschedule to" + body['scheduled_time'])
+        new_deal_activity(deal_id,"Interview reschedule to" + body['scheduled_time'])
     print('test4')  
     db.session.commit() 
     print('test5')
@@ -54,46 +54,46 @@ def get_questionnaire(id):
         raise APIException('questionnaire not found', status_code=404)
     return jsonify(questionnaire1.serialize()), 200
 
-@api.route('/contacts', methods=['GET'])
-def get_contacts():
-    contacts = Contact.query
+@api.route('/deals', methods=['GET'])
+def get_deals():
+    deals = Deal.query
 
     # score = request.args.get('score')
     # if score is not None and score != "":
-    #     contacts = contacts.filter_by(score=score)
+    #     deals = deals.filter_by(score=score)
 
     sort = request.args.get('sort')
     if sort is not None and sort != "" and sort != "undefined":
-        contacts = contacts.order_by(sort)
-    contacts = contacts.all()
+        deals = deals.order_by(sort)
+    deals = deals.all()
     
 
-    if contacts is None:
+    if deals is None:
         raise APIException('contacs not found', status_code=404)
-    all_contacts = list(map(lambda x: x.serialize(), contacts))
-    return jsonify(all_contacts), 200
+    all_deals = list(map(lambda x: x.serialize(), deals))
+    return jsonify(all_deals), 200
 
 
 
-@api.route('/contact/<int:contact_id>/interview', methods=['POST'])
-def create_interview(contact_id):
+@api.route('/deal/<int:deal_id>/interview', methods=['POST'])
+def create_interview(deal_id):
     body = request.get_json()
     
-    existing_interview = Interview.query.filter_by(contact_id=contact_id, questionnaire_id=body['questionnaire_id']).first()
+    existing_interview = Interview.query.filter_by(deal_id=deal_id, questionnaire_id=body['questionnaire_id']).first()
     if existing_interview is not None:
-        raise APIException('There is already an interview with this id for this contact')
+        raise APIException('There is already an interview with this id for this deal')
 
 
     interview1 = Interview()
     interview1.agent_id = body['agent_id']
     interview1.questionnaire_id = body['questionnaire_id']
-    interview1.contact_id = contact_id
+    interview1.deal_id = deal_id
     if "scheduled_time" not in body:
         interview1.starting_time = datetime.utcnow()
         interview1.status = 'DRAFT'
-        new_contact_activity(contact_id,"Interview rescheduled for"+ body['scheduled_time'])
+        new_deal_activity(deal_id,"Interview rescheduled for"+ body['scheduled_time'])
     else:
-        new_contact_activity(contact_id,"Interview started")
+        new_deal_activity(deal_id,"Interview started")
         interview1.status = 'DRAFT'
         interview1.scheduled_time = body['scheduled_time']
     db.session.add(interview1)
@@ -159,11 +159,11 @@ def update_interview_score(interview_id):
     target_interview.score_total = total_score
     db.session.commit()
     
-def new_contact_activity(contact_id,details,_type="note"):
+def new_deal_activity(deal_id,details,_type="note"):
     activity = Activity(
         details = details,
         activity_type = _type,
-        contact_id = contact_id
+        deal_id = deal_id
     )
     db.session.add(activity)
     db.session.commit()
@@ -177,13 +177,13 @@ def get_interviews():
 
 
 
-@api.route('/agent/<int:agent_id>/contact/next', methods=['GET'])
-def get_next_contact(agent_id):
-    contact = Contact.query.filter_by(interview_status="PENDING",agent_id=agent_id).order_by('contacted_at').order_by('contact_attemps').first()
-    if contact is None:
-        raise APIException('No contact available')
+@api.route('/agent/<int:agent_id>/deal/next', methods=['GET'])
+def get_next_deal(agent_id):
+    deal = Deal.query.filter_by(interview_status="PENDING",agent_id=agent_id).order_by('contacted_at').order_by('deal_attemps').first()
+    if deal is None:
+        raise APIException('No deal available')
     
-    return contact.serialize(), 200
+    return deal.serialize(), 200
 
 @api.route('/agent/<int:agent_id>/interview/next', methods=['GET'])
 def get_next_interview(agent_id):
@@ -210,39 +210,39 @@ def get_interview(interview_id):
     return interview1.serialize_big(), 200
 
 
-@api.route('/contact/<int:contact_id>', methods=['GET', 'PUT'])
-def get_single_contact(contact_id):
+@api.route('/deal/<int:deal_id>', methods=['GET', 'PUT'])
+def get_single_deal(deal_id):
     body = request.get_json()
-    contact1 = Contact.query.get(contact_id)
+    deal1 = Deal.query.get(deal_id)
 
     if request.method == 'GET':
-        if contact1 is None:
-            raise APIException('No contact with that id')
-        return contact1.serialize(), 200
+        if deal1 is None:
+            raise APIException('No deal with that id')
+        return deal1.serialize(), 200
     
     if request.method == 'PUT':
-        if contact1 is None:
-            raise APIException('No contact with that id')
+        if deal1 is None:
+            raise APIException('No deal with that id')
         if "first_name" in body:
-            contact1.first_name = body['first_name']
+            deal1.first_name = body['first_name']
         if "last_name" in body:
-            contact1.last_name = body['last_name']
+            deal1.last_name = body['last_name']
         if "interview_status" in body:
-            contact1.interview_status = body['interview_status']
+            deal1.interview_status = body['interview_status']
         if "approved_status" in body:    
-            contact1.approved_status = body['approved_status']
+            deal1.approved_status = body['approved_status']
         if "communication_status" in body: 
-            contact1.communication_status = body['communication_status']
+            deal1.communication_status = body['communication_status']
         if "contacted_at" in body: 
-            contact1.contacted_at = body['contacted_at']
-        if "contact_attemps" in body: 
-            contact1.contact_attemps = body['contact_attemps']
+            deal1.contacted_at = body['contacted_at']
+        if "deal_attemps" in body: 
+            deal1.deal_attemps = body['deal_attemps']
         if "agent_id" in body: 
-            contact1.agent_id = body['agent_id']
+            deal1.agent_id = body['agent_id']
         db.session.commit() 
 
-        new_contact_activity(contact_id,"contact modified")
-        return contact1.serialize(), 200
+        new_deal_activity(deal_id,"deal modified")
+        return deal1.serialize(), 200
 
 
 

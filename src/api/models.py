@@ -11,7 +11,7 @@ class Agent(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     interviews = db.relationship('Interview', backref='agent', lazy=True)
-    contacts = db.relationship('Contact', backref='agent', lazy=True)
+    deals = db.relationship('Deal', backref='agent', lazy=True)
     time_zone = db.Column(db.String(120), unique=True, default='America/New_York')
    
     
@@ -29,14 +29,8 @@ class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(80), unique=False, nullable=False)
     last_name = db.Column(db.String(80), unique=False, nullable=False)
-    interview_status = db.Column(db.String(80), unique=False, nullable=False, default="PENDING")
-    approved_status = db.Column(db.String(80), unique=False, nullable=True)
-    communication_status = db.Column(db.String(80), unique=False, nullable=True)
-    interview = db.relationship('Interview', backref='contact', lazy=True)
-    activities = db.relationship('Activity', backref='contact', lazy=True)
-    contacted_at = db.Column(db.DateTime, nullable=True, default=None)
-    contact_attemps = db.Column(db.Integer, default=0)
-    agent_id = db.Column(db.Integer, db.ForeignKey('agent.id'), nullable=True, default=None)
+    deals = db.relationship('Deal', backref='contact', lazy=True)
+    created_at = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
     
     
 
@@ -48,12 +42,48 @@ class Contact(db.Model):
             "id": self.id,
             "first_name": self.first_name,
             "last_name": self.last_name,
+            "deals": [a.serialize() for a in self.deals],
+            "created_at": self.created_at
+        }
+
+    def serialize_small(self):
+        return {
+            "id": self.id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "created_at": self.created_at
+        }
+
+
+class Deal(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    interview_status = db.Column(db.String(80), unique=False, nullable=False, default="PENDING")
+    approved_status = db.Column(db.String(80), unique=False, nullable=True)
+    communication_status = db.Column(db.String(80), unique=False, nullable=True)
+    interview = db.relationship('Interview', backref='deal', lazy=True)
+    activities = db.relationship('Activity', backref='deal', lazy=True)
+    contacted_at = db.Column(db.DateTime(timezone=True), nullable=True, default=None)
+    deal_attemps = db.Column(db.Integer, default=0)
+    agent_id = db.Column(db.Integer, db.ForeignKey('agent.id'), nullable=True, default=None)
+    contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'), nullable=True, default=None)
+    
+    
+
+    def __repr__(self):
+        return '<Deal %r>' % self.id
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "contact": self.contact.serialize_small(),
             "interview_status": self.interview_status,
             "approved_status": self.approved_status,
             "activities": [a.serialize() for a in self.activities],
             "communication_status": self.communication_status,
-            "contact_attemps": self.contact_attemps,
-            "contacted_at": self.contacted_at
+            "deal_attemps": self.deal_attemps,
+            "contacted_at": self.contacted_at,
+            "contact_id": self.contact_id,
+            
         }
 
     def serialize_small(self):
@@ -64,8 +94,9 @@ class Contact(db.Model):
             "interview_status": self.interview_status,
             "approved_status": self.approved_status,
             "communication_status": self.communication_status,
-            "contact_attemps": self.contact_attemps,
-            "contacted_at": self.contacted_at
+            "deal_attemps": self.deal_attemps,
+            "contacted_at": self.contacted_at,
+            "contact_id": self.contact_id,
         }
 
 
@@ -74,11 +105,11 @@ class Activity(db.Model):
     details = db.Column(db.String(350), unique=False, nullable=False)
     label = db.Column(db.String(100), unique=False, nullable=True)
     activity_type = db.Column(db.String(80), unique=False, nullable=False) #'note','event'
-    contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    deal_id = db.Column(db.Integer, db.ForeignKey('deal.id'), nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
 
     def __repr__(self):
-        return '<Contact %r>' % self.id
+        return '<Deal %r>' % self.id
 
     def serialize(self):
         return {
@@ -86,17 +117,17 @@ class Activity(db.Model):
             "details": self.details,
             "label": self.label,
             "activity_type": self.activity_type,
-            "contact_id": self.contact_id,
+            "deal_id": self.deal_id,
             "created_at": self.created_at,
         }
 
 class Interview(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    starting_time = db.Column(db.DateTime)
-    ending_time = db.Column(db.DateTime)
+    starting_time = db.Column(db.DateTime(timezone=True))
+    ending_time = db.Column(db.DateTime(timezone=True))
     agent_id = db.Column(db.Integer, db.ForeignKey('agent.id'), nullable=False)
     questionnaire_id = db.Column(db.Integer, db.ForeignKey('questionnaire.id'), nullable=False )
-    contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'), nullable=False)
+    deal_id = db.Column(db.Integer, db.ForeignKey('deal.id'), nullable=False)
     answers = db.relationship('Answer', backref='interview', lazy=True)
     status = db.Column(db.String(80), unique=False, nullable=False)
     score_total = db.Column(db.Integer, unique=False, nullable=True)
@@ -113,8 +144,8 @@ class Interview(db.Model):
             "ending_time": self.ending_time,
             "agent_id": self.agent_id,
             "questionnaire_id": self.questionnaire_id,
-            "contact_id": self.contact_id,
-            "contact": self.contact.serialize_small(),
+            "deal_id": self.deal_id,
+            "deal": self.deal.serialize_small(),
             "status": self.status,
             "score_total": self.score_total,
             "scheduled_time": self.scheduled_time
@@ -128,7 +159,7 @@ class Interview(db.Model):
             "ending_time": self.ending_time,
             "agent_id": self.agent_id,
             "questionnaire_id": self.questionnaire_id,
-            "contact_id": self.contact_id,
+            "deal_id": self.deal_id,
             "status": self.status,
             "score_total": self.score_total,
             'questionnaire': questionnaire.serialize(),

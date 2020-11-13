@@ -20,8 +20,8 @@ export const InterviewCall = () => {
 				actions.getInterview(store.interviews[0].id);
 			}
 		}
-		if (!store.currentContact) {
-			actions.getContact(params.contactId);
+		if (!store.currentDeal) {
+			actions.getDeal(params.dealId);
 		}
 	}, []);
 
@@ -30,8 +30,8 @@ export const InterviewCall = () => {
 
 	return (
 		<Container fluid>
-			{store.currentContact === null ? (
-				<h1>No more contacts to interview</h1>
+			{store.currentDeal === null ? (
+				<h1>No more deals to interview</h1>
 			) : (
 				<Row>
 					<Col md={8}>
@@ -47,7 +47,7 @@ export const InterviewCall = () => {
 						})}
 					</Col>
 					<Col md={4}>
-						<InformationCard contact={store.currentContact} />
+						<InformationCard deal={store.currentDeal} />
 					</Col>
 				</Row>
 			)}

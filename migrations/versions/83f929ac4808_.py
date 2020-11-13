@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 9ee9722c70b7
+Revision ID: 83f929ac4808
 Revises: 
-Create Date: 2020-11-12 23:45:30.632704
+Create Date: 2020-11-13 02:49:29.522227
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9ee9722c70b7'
+revision = '83f929ac4808'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -27,23 +27,30 @@ def upgrade():
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('time_zone')
     )
+    op.create_table('contact',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('first_name', sa.String(length=80), nullable=False),
+    sa.Column('last_name', sa.String(length=80), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('questionnaire',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=120), nullable=False),
     sa.Column('description', sa.String(length=120), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('contact',
+    op.create_table('deal',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('first_name', sa.String(length=80), nullable=False),
-    sa.Column('last_name', sa.String(length=80), nullable=False),
     sa.Column('interview_status', sa.String(length=80), nullable=False),
     sa.Column('approved_status', sa.String(length=80), nullable=True),
     sa.Column('communication_status', sa.String(length=80), nullable=True),
-    sa.Column('contacted_at', sa.DateTime(), nullable=True),
-    sa.Column('contact_attemps', sa.Integer(), nullable=True),
+    sa.Column('contacted_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('deal_attemps', sa.Integer(), nullable=True),
     sa.Column('agent_id', sa.Integer(), nullable=True),
+    sa.Column('contact_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['agent_id'], ['agent.id'], ),
+    sa.ForeignKeyConstraint(['contact_id'], ['contact.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('activity',
@@ -51,23 +58,23 @@ def upgrade():
     sa.Column('details', sa.String(length=350), nullable=False),
     sa.Column('label', sa.String(length=100), nullable=True),
     sa.Column('activity_type', sa.String(length=80), nullable=False),
-    sa.Column('contact_id', sa.Integer(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['contact_id'], ['contact.id'], ),
+    sa.Column('deal_id', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
+    sa.ForeignKeyConstraint(['deal_id'], ['deal.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('interview',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('starting_time', sa.DateTime(), nullable=True),
-    sa.Column('ending_time', sa.DateTime(), nullable=True),
+    sa.Column('starting_time', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('ending_time', sa.DateTime(timezone=True), nullable=True),
     sa.Column('agent_id', sa.Integer(), nullable=False),
     sa.Column('questionnaire_id', sa.Integer(), nullable=False),
-    sa.Column('contact_id', sa.Integer(), nullable=False),
+    sa.Column('deal_id', sa.Integer(), nullable=False),
     sa.Column('status', sa.String(length=80), nullable=False),
     sa.Column('score_total', sa.Integer(), nullable=True),
     sa.Column('scheduled_time', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['agent_id'], ['agent.id'], ),
-    sa.ForeignKeyConstraint(['contact_id'], ['contact.id'], ),
+    sa.ForeignKeyConstraint(['deal_id'], ['deal.id'], ),
     sa.ForeignKeyConstraint(['questionnaire_id'], ['questionnaire.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -90,7 +97,7 @@ def upgrade():
     )
     op.create_table('answer',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('comments', sa.String(length=120), nullable=False),
+    sa.Column('comments', sa.String(length=120), nullable=True),
     sa.Column('interview_id', sa.Integer(), nullable=False),
     sa.Column('option_id', sa.Integer(), nullable=False),
     sa.Column('value', sa.Integer(), nullable=False),
@@ -108,7 +115,8 @@ def downgrade():
     op.drop_table('question')
     op.drop_table('interview')
     op.drop_table('activity')
-    op.drop_table('contact')
+    op.drop_table('deal')
     op.drop_table('questionnaire')
+    op.drop_table('contact')
     op.drop_table('agent')
     # ### end Alembic commands ###

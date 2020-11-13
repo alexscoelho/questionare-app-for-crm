@@ -5,15 +5,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			questionnaire: null,
 			interview: null,
 			interviews: null,
-			currentContact: null,
+			currentDeal: null,
 			agent: null,
 			questionnaireId: 1
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
-			getContacts: (opt = {}) => {
+			getDeals: (opt = {}) => {
 				const { sort = "", score = "" } = opt;
-				fetch(`${process.env.BACKEND_URL}/api/contacts?sort=${sort}`)
+				fetch(`${process.env.BACKEND_URL}/api/deals?sort=${sort}`)
 					.then(response => response.json())
 					.then(data => setStore({ candidates: data }))
 					.catch(error => console.log("Error loading contacs from backend", error));
@@ -37,10 +37,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then(data => setStore({ questionnaire: data.questions }))
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
-			getContact: id => {
-				fetch(`${process.env.BACKEND_URL}/api/contact/${id}`)
+			getDeal: id => {
+				fetch(`${process.env.BACKEND_URL}/api/deal/${id}`)
 					.then(response => response.json())
-					.then(data => setStore({ currentContact: data }))
+					.then(data => setStore({ currentDeal: data }))
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},
 			getInterview: id =>
@@ -95,11 +95,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 						});
 				}),
 
-			updateContact: (id, contactBody) => {
-				fetch(`${process.env.BACKEND_URL}/api/contact/${id}`, {
+			updateDeal: (id, dealBody) => {
+				fetch(`${process.env.BACKEND_URL}/api/deal/${id}`, {
 					method: "PUT",
 					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(contactBody)
+					body: JSON.stringify(dealBody)
 				})
 					.then(response => response.json())
 					.then(data => console.log(data))
@@ -107,14 +107,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			updateInterview: payload => {
 				const store = getStore();
-				fetch(
-					`${process.env.BACKEND_URL}/api/contact/${store.currentContact.id}/interview/${store.interview.id}`,
-					{
-						method: "PUT",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify(payload)
-					}
-				)
+				fetch(`${process.env.BACKEND_URL}/api/deal/${store.currentDeal.id}/interview/${store.interview.id}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(payload)
+				})
 					.then(response => response.json())
 					.then(data => console.log(data))
 					.catch(error => console.log("Error loading contacs from backend", error));
@@ -122,7 +119,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			redirectNextInterview: () =>
 				new Promise((resolve, reject) => {
 					const store = getStore();
-					fetch(`${process.env.BACKEND_URL}/api/agent/${store.agent.id}/contact/next`)
+					fetch(`${process.env.BACKEND_URL}/api/agent/${store.agent.id}/deal/next`)
 						.then(async response => {
 							console.log("response:", response);
 							if (response.status === 200) return await response.json();
@@ -136,7 +133,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						})
 
 						.then(data => {
-							setStore({ currentContact: data });
+							setStore({ currentDeal: data });
 							console.log("no deberia");
 							resolve(data);
 						})
@@ -149,7 +146,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			startInterview: (history, params, formData) => {
 				const store = getStore();
 				const actions = getActions();
-				fetch(`${process.env.BACKEND_URL}/api/contact/${store.currentContact.id}/interview`, {
+				fetch(`${process.env.BACKEND_URL}/api/deal/${store.currentDeal.id}/interview`, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
@@ -162,7 +159,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then(response => response.json())
 					.then(data => {
 						setStore({ interview: actions.sanitazeInterview(data) });
-						history.push(`/contact/${params.contactId}/interview/${data.id}`);
+						history.push(`/deal/${params.dealId}/interview/${data.id}`);
 					})
 					.catch(error => console.log("Error loading contacs from backend", error));
 			},

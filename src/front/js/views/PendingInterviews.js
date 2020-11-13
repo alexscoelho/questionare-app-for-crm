@@ -8,7 +8,7 @@ export const PendingInterviews = () => {
 	const { store, actions } = useContext(Context);
 	const history = useHistory();
 
-	const tableHeaders = ["Contact Name", "Scheduled Time", "Status", "Score", "Contact Attempts"];
+	const tableHeaders = ["Deal Name", "Scheduled Time", "Status", "Score", "Deal Attempts"];
 
 	useEffect(
 		() => {
@@ -23,13 +23,13 @@ export const PendingInterviews = () => {
 			<h1>Pending Interviews</h1>
 			<Row>
 				<Col>
-					<SmartTable headers={tableHeaders} handleSort={key => actions.getContacts({ sort: key })}>
+					<SmartTable headers={tableHeaders} handleSort={key => actions.getDeals({ sort: key })}>
 						{store.interviews.map((interview, index) => (
 							<TableRow
 								key={index}
 								data={interview}
 								handleRedirect={() =>
-									history.push(`/contact/${interview.contact_id}/interview/${interview.id}`)
+									history.push(`/deal/${interview.deal_id}/interview/${interview.id}`)
 								}
 								onToggle={value =>
 									store.interviews.map(i => {

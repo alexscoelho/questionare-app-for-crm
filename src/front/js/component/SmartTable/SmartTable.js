@@ -8,11 +8,11 @@ export const TableRow = ({ data, onToggle, handleRedirect }) => {
 			<td scope="row">
 				<input type="checkbox" onClick={() => onToggle(!data.checked)} value={data.checked} />
 			</td>
-			<td>{data.first_name || data.contact.first_name}</td>
+			<td>{data.first_name || data.dealrst_name}</td>
 			<td>{data.interview_status || data.scheduled_time}</td>
 			<td>{data.approved_status || data.status}</td>
 			<td>{data.first_name || data.score_total}</td>
-			<td>{data.first_name || data.contact.contact_attemps}</td>
+			<td>{data.first_name || data.dealsdealps}</td>
 			<td>{data.first_name}</td>
 			<td>
 				<a href="#" onClick={() => handleRedirect()}>
