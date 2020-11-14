@@ -1,0 +1,27 @@
+.notes-box {
+    background-color: "#EFEFEF";
+}
+
+.arrow {
+    content: "";
+    transform: rotate(90deg);
+    position: absolute;
+    top: 65%;
+    left: 3%;
+    margin-left: -6px;
+    border-width: 7px;
+    border-style: solid;
+    border-color: #EFEFEF transparent transparent transparent;
+
+}
+
+.notes-box li {
+    padding-top: 10px;
+    list-style-type: none;
+    padding-left:10px
+}
+
+.button.btn.btn-primary.btn-sm {
+    margin-top: -2;
+}
+

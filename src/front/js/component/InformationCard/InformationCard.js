@@ -42,9 +42,8 @@ export const InformationCard = ({ deal }) => {
 						<strong>Contact Attempts:</strong> {deal.deal_attemps}
 					</p>
 				</Card.Text>
-				<Alert variant="light" className="call-status">
-					{deal.contacted_at} <br />
-					{deal.communication_status}
+				<div className="notes-box" style={{ backgroundColor: "#EFEFEF" }}>
+					<div className="arrow" />
 					{Array.isArray(deal.activities) &&
 						deal.activities.map(a => {
 							return (
@@ -52,16 +51,10 @@ export const InformationCard = ({ deal }) => {
 									<h5 className="m-0">{a.details}</h5>
 									<span>{moment(a.created_at).fromNow()}</span>
 								</li>
-								// <Popover key={a.id} id="popover-basic">
-								// 	<Popover.Title as="h3">Popover right</Popover.Title>
-								// 	<Popover.Content>
-								// 		And heres some <strong>amazing</strong> content. Its very engaging. right?
-								// 	</Popover.Content>
-								// </Popover>
 							);
 						})}
-				</Alert>
-				<Card.Link onClick={() => setAddNote(true)} href="#">
+				</div>
+				<Card.Link style={{ marginTop: 5 }} onClick={() => setAddNote(true)} href="#">
 					Add new note
 				</Card.Link>
 				{formStatus.status == "danger" && <Alert variant="danger">{formStatus.message}</Alert>}
@@ -69,13 +62,13 @@ export const InformationCard = ({ deal }) => {
 					<>
 						<input
 							onChange={event => setNoteContent(event.target.value)}
-							style={{ marginLeft: 5 }}
+							style={{ marginLeft: 5, marginTop: 10 }}
 							type="text"
 							value={noteContent}
 						/>
-						<button style={{ marginLeft: 5 }} onClick={() => handleClick()}>
+						<Button size="sm" style={{ marginLeft: 5 }} onClick={() => handleClick()}>
 							Save
-						</button>
+						</Button>
 					</>
 				)}
 			</Card.Body>
