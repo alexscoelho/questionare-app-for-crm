@@ -11,13 +11,15 @@ export const InformationCard = ({ deal }) => {
 	const [addNote, setAddNote] = useState(false);
 	const [noteContent, setNoteContent] = useState("");
 	const [formStatus, setFormStatus] = useState({ status: "idle", message: "" });
+
 	const handleClick = () => {
 		actions
 			.updateDeal(deal.id, { note: noteContent })
-			.then(deal => actions.getDeals(deal.id))
+			.then(deal => console.log("aftermethodcall:", deal))
 			.catch(e => setFormStatus({ status: "danger", message: e.message }));
 		setNoteContent("");
 	};
+
 	return (
 		<Card style={{ width: "22rem" }} className="ml-auto">
 			<Card.Body>
@@ -42,18 +44,20 @@ export const InformationCard = ({ deal }) => {
 						<strong>Contact Attempts:</strong> {deal.deal_attemps}
 					</p>
 				</Card.Text>
-				<div className="notes-box" style={{ backgroundColor: "#EFEFEF" }}>
-					<div className="arrow" />
-					{Array.isArray(deal.activities) &&
-						deal.activities.map(a => {
-							return (
-								<li key={a.id}>
-									<h5 className="m-0">{a.details}</h5>
-									<span>{moment(a.created_at).fromNow()}</span>
-								</li>
-							);
-						})}
-				</div>
+				{deal.activities.length !== 0 && (
+					<div className="notes-box" style={{ backgroundColor: "#EFEFEF" }}>
+						<div className="arrow" />
+						{Array.isArray(deal.activities) &&
+							deal.activities.map(a => {
+								return (
+									<li key={a.id}>
+										<h5 className="m-0">{a.details}</h5>
+										<span>{moment(a.created_at).fromNow()}</span>
+									</li>
+								);
+							})}
+					</div>
+				)}
 				<Card.Link style={{ marginTop: 5 }} onClick={() => setAddNote(true)} href="#">
 					Add new note
 				</Card.Link>

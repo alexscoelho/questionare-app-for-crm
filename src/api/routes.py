@@ -314,7 +314,8 @@ def get_single_deal(deal_id):
             deal1.agent_id = body['agent_id']
         db.session.commit() 
 
-        new_deal_activity(deal_id,"deal modified")
+        if "note" not in body:
+            new_deal_activity(deal_id,"deal modified")
         return deal1.serialize(), 200
 
 
