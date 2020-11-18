@@ -106,6 +106,7 @@ class Deal(db.Model):
             "deal_attemps": self.deal_attemps,
             "contacted_at": self.contacted_at,
             "contact_id": self.contact_id,
+            "interview": [a.serialize() for a in self.interview],
             
         }
 

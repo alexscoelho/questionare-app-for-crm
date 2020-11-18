@@ -25,7 +25,6 @@ export const CommunicationStatus = () => {
 	const [showTextArea, setShowTextArea] = useState(false);
 
 	useEffect(() => {
-		console.log("communicationStatus", store);
 		actions.getDeal(params.dealId);
 	}, []);
 

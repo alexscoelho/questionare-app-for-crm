@@ -7,33 +7,40 @@ import { Container, Row, Col, Button } from "react-bootstrap/";
 
 export const DealList = () => {
 	const { store, actions } = useContext(Context);
-	const tableHeaders = ["Student", "Interview", "Aproved", "Score", "Test", "Last Deal"];
+	const tableHeaders = ["Student", "Deal Name", "Aproved", "Score", "Interview Status"];
 
 	const handleClick = () => {
 		alert(`There ${store.candidates.filter(c => c.checked).length} store.candidates checked`);
 	};
 
+	useEffect(() => {
+		if (store.candidates === null) actions.getDeals();
+	}, []);
+
+	console.log(store.candidates);
+
 	return (
 		<Container fluid>
-			<h1>Candidates</h1>
+			<h1>Deals</h1>
 			<Row>
 				<Col md={8}>
 					<Button style={{ marginBotton: 5 }} variant="light" onClick={handleClick}>
 						Actions
 					</Button>
 					<SmartTable headers={tableHeaders} handleSort={key => actions.getDeals({ sort: key })}>
-						{store.candidates.map((c, index) => (
-							<TableRow
-								key={index}
-								data={c}
-								onToggle={value =>
-									store.candidates.map(deal => {
-										if (c.id === deal.id) deal.checked = value;
-										return deal;
-									})
-								}
-							/>
-						))}
+						{store.candidates !== null &&
+							store.candidates.map((c, index) => (
+								<TableRow
+									key={index}
+									data={c}
+									onToggle={value =>
+										store.candidates.map(deal => {
+											if (c.id === deal.id) deal.checked = value;
+											return deal;
+										})
+									}
+								/>
+							))}
 					</SmartTable>
 				</Col>
 				<Col md={2} className="filter-options">
