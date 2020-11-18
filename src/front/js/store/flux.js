@@ -111,16 +111,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify(dealBody)
 				});
 				const store = getStore();
-				if (store.candidates)
-					setStore(
-						{
-							candidates: store.candidates.map(c => {
-								if (c.id == data.id) return data;
-								else return c;
-							})
-						},
-						{ currentDeal: data }
-					);
+				const _candidates = store.candidates || [];
+				const dealExists = _candidates.find(d => d.id == data.id);
+				if (dealExists) {
+					setStore({
+						candidates: store.candidates.map(c => {
+							if (c.id == data.id) return data;
+							else return c;
+						}),
+						currentDeal: data
+					});
+				} else {
+					setStore({
+						candidates: _candidates.concat(data),
+						currentDeal: data
+					});
+				}
 				return data;
 			},
 			updateInterview: async payload => {

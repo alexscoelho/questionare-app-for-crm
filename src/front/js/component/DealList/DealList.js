@@ -1,11 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
-import "./CandidateList.scss";
+import "./DealList.scss";
 import { Context } from "../../store/appContext";
 
 import { SmartTable, TableRow } from "../SmartTable/SmartTable";
 import { Container, Row, Col, Button } from "react-bootstrap/";
 
-export const CandidateList = () => {
+export const DealList = () => {
 	const { store, actions } = useContext(Context);
 	const tableHeaders = ["Student", "Interview", "Aproved", "Score", "Test", "Last Deal"];
 

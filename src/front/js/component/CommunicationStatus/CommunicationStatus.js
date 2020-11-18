@@ -74,6 +74,7 @@ export const CommunicationStatus = () => {
 				</>
 			);
 	};
+	console.log("Me refresque", store.currentDeal);
 	if (!store.currentDeal) return "Loading...";
 	return (
 		<Container fluid>
@@ -116,7 +117,10 @@ export const CommunicationStatus = () => {
 					)}
 				</Col>
 				<Col md={4}>
-					<InformationCard deal={store.currentDeal} />
+					<InformationCard
+						deal={store.currentDeal}
+						onAddNewNote={noteContent => actions.updateDeal(params.dealId, { note: noteContent })}
+					/>
 				</Col>
 			</Row>
 		</Container>

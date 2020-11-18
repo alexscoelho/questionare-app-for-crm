@@ -13,7 +13,7 @@ import { Login } from "./component/Login/Login.js";
 import { Dashboard } from "./component/Dashboard/Dashboard.js";
 import { CommunicationStatus } from "./component/CommunicationStatus/CommunicationStatus.js";
 import { InterviewCall } from "./component/InterviewCall/InterviewCall.js";
-import { CandidateList } from "./component/CandidateList/CandidateList.js";
+import { DealList } from "./component/DealList/DealList.js";
 import { InterviewList } from "./views/InterviewList";
 import { PrivateRoute } from "./component/PrivateRoute.js";
 
@@ -43,7 +43,7 @@ const Layout = () => {
 							<InterviewCall />
 						</PrivateRoute>
 						<PrivateRoute exact path="/deals">
-							<CandidateList />
+							<DealList />
 						</PrivateRoute>
 						<PrivateRoute exact path="/interviews">
 							<InterviewList />

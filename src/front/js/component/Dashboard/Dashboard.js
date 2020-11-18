@@ -89,7 +89,7 @@ export const Dashboard = () => {
 					{message.label}
 				</Alert>
 			)}
-			<h2>By interview stage: </h2>
+			<h2>By deal stage: </h2>
 			<Row>
 				{steps.map(s => (
 					<Col key={s.callTo} md={3}>

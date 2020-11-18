@@ -21,7 +21,7 @@ class Agent(db.Model):
    
     
     def __repr__(self):
-        return '<Agent %r>' % self.id
+        return '<Agent %r>' % self.email
 
     def serialize(self):
         return {
@@ -122,7 +122,7 @@ class Deal(db.Model):
 
 class ActivityTypes(enum.Enum):
     NOTE = 'NOTE'
-    EVENT = 'EVENT'
+    SYSTEM = 'SYSTEM'
 class Activity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     details = db.Column(db.String(350), unique=False, nullable=False)

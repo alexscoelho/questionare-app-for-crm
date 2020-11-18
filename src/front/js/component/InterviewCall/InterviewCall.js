@@ -11,6 +11,7 @@ import { InterviewActions } from "../InterviewActions";
 export const InterviewCall = () => {
 	const params = useParams();
 	const { store, actions } = useContext(Context);
+	console.log("deal", store.currentDeal);
 
 	useEffect(() => {
 		if (!store.interview) {
@@ -25,8 +26,8 @@ export const InterviewCall = () => {
 		}
 	}, []);
 
-	if (!store.interview) return "loading...";
 	console.log("interview sanitazed", store.interview);
+	if (!store.interview) return "loading...";
 
 	return (
 		<Container fluid>
@@ -47,7 +48,10 @@ export const InterviewCall = () => {
 						})}
 					</Col>
 					<Col md={4}>
-						<InformationCard deal={store.currentDeal} />
+						<InformationCard
+							deal={store.currentDeal}
+							onAddNewNote={noteContent => actions.updateDeal(params.dealId, { note: noteContent })}
+						/>
 					</Col>
 				</Row>
 			)}

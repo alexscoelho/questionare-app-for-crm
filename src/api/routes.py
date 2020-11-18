@@ -207,7 +207,7 @@ def update_interview_score(interview_id):
     target_interview.score_total = total_score
     db.session.commit()
     
-def new_deal_activity(deal_id,details,_type="note"):
+def new_deal_activity(deal_id,details,_type="SYSTEM"):
     activity = Activity(
         details = details,
         activity_type = _type.upper(),
@@ -298,8 +298,6 @@ def get_single_deal(deal_id):
     if request.method == 'PUT':
         body = request.get_json()
 
-        if "note" in body:
-            new_deal_activity(deal_id,body['note'])
 
         if "status" in body:
             deal1.status = body['status']
@@ -314,8 +312,11 @@ def get_single_deal(deal_id):
             deal1.agent_id = body['agent_id']
         db.session.commit() 
 
-        if "note" not in body:
+        if "note" in body:
+            new_deal_activity(deal_id,body['note'], "NOTE")
+        else:
             new_deal_activity(deal_id,"deal modified")
+
         return deal1.serialize(), 200
 
 

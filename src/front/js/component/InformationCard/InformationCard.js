@@ -1,24 +1,16 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useState } from "react";
 import "./InformationCard.scss";
 import moment from "moment";
 import { Context } from "../../store/appContext";
 import PropTypes from "prop-types";
 import { Card, Button, Alert, Popover } from "react-bootstrap/";
 
-export const InformationCard = ({ deal }) => {
-	const { store, actions } = useContext(Context);
+export const InformationCard = ({ deal, onAddNewNote }) => {
 	if (!deal) return "loading...";
+
 	const [addNote, setAddNote] = useState(false);
 	const [noteContent, setNoteContent] = useState("");
 	const [formStatus, setFormStatus] = useState({ status: "idle", message: "" });
-
-	const handleClick = () => {
-		actions
-			.updateDeal(deal.id, { note: noteContent })
-			.then(deal => console.log("aftermethodcall:", deal))
-			.catch(e => setFormStatus({ status: "danger", message: e.message }));
-		setNoteContent("");
-	};
 
 	return (
 		<Card style={{ width: "22rem" }} className="ml-auto">
@@ -51,6 +43,7 @@ export const InformationCard = ({ deal }) => {
 							deal.activities.map(a => {
 								return (
 									<li key={a.id}>
+										{a.activity_type == "NOTE" && <i className="fas fa-trash-alt float-right" />}
 										<h5 className="m-0">{a.details}</h5>
 										<span>{moment(a.created_at).fromNow()}</span>
 									</li>
@@ -70,7 +63,17 @@ export const InformationCard = ({ deal }) => {
 							type="text"
 							value={noteContent}
 						/>
-						<Button size="sm" style={{ marginLeft: 5 }} onClick={() => handleClick()}>
+						<Button
+							size="sm"
+							style={{ marginLeft: 5 }}
+							onClick={() => {
+								if (noteContent && noteContent != "") {
+									if (onAddNewNote) {
+										onAddNewNote(noteContent);
+										setNoteContent("");
+									}
+								} else setFormStatus({ status: "danger", message: "Empty form status" });
+							}}>
 							Save
 						</Button>
 					</>
@@ -80,8 +83,10 @@ export const InformationCard = ({ deal }) => {
 	);
 };
 InformationCard.propTypes = {
-	deal: PropTypes.object
+	deal: PropTypes.object,
+	onAddNewNote: PropTypes.func
 };
 InformationCard.defaultProps = {
-	deal: null
+	deal: null,
+	onAddNewNote: null
 };
