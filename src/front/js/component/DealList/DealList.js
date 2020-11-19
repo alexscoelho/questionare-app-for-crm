@@ -25,7 +25,11 @@ export const DealList = () => {
 	});
 
 	const filterParams = [
-		{ filterType: "select", filterValues: ["Pending", "Aproved", "Rejected", "Not Interested"] },
+		{
+			filterType: "select",
+			filterValues: ["PENDING", "APROVED", "REJECTED", "NOT_INTERESTED"],
+			label: "Deal Status"
+		},
 		{ filterType: "range", filterValues: null }
 	];
 
@@ -71,7 +75,6 @@ export const DealList = () => {
 					</SmartTable>
 				</Col>
 
-				{/*                                                           { score: 3 }     */}
 				<Filters
 					filterParams={filterParams}
 					onChange={filterObject => setFilters({ ...filters, ...filterObject })}

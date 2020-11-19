@@ -11,22 +11,27 @@ export const Filters = ({ filterParams, onChange }) => {
 			{filterParams.map((filter, index) => {
 				if (filter.filterType === "select") {
 					return (
-						<Form.Group controlId="dealStatus">
-							<Form.Label>Deal Status</Form.Label>
-							<Form.Control as="select">
-								{filter.filterValues.map((value, index) => (
-									<option key={index}>{value}</option>
-								))}
-							</Form.Control>
-						</Form.Group>
+						<Form key={index}>
+							<Form.Group controlId="dealStatus">
+								<Form.Label>{filter.label}</Form.Label>
+								<Form.Control as="select" onChange={event => onChange({ status: event.target.value })}>
+									{filter.filterValues.map((value, index) => (
+										<option key={index}>{value}</option>
+									))}
+								</Form.Control>
+							</Form.Group>
+						</Form>
 					);
 				}
 				if (filter.filterType === "range") {
 					return (
-						<Form>
+						<Form key={index} onChange={onChange}>
 							<Form.Group controlId="formBasicRange">
-								<Form.Label>Score</Form.Label>
-								<Form.Control type="range" />
+								<Form.Label>{filter.label}</Form.Label>
+								<Form.Control
+									type="range"
+									onChange={event => onChange({ score: event.target.value })}
+								/>
 							</Form.Group>
 						</Form>
 					);

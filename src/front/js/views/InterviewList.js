@@ -1,8 +1,9 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 import { useHistory, useLocation } from "react-router-dom";
 import { Container, Row, Col, Button } from "react-bootstrap/";
 import { SmartTable, TableRow } from "../component/SmartTable/SmartTable";
+import { Filters } from "../component/Filters/Filters";
 
 function useQuery() {
 	return new URLSearchParams(useLocation().search);
@@ -20,6 +21,13 @@ export const InterviewList = () => {
 		{ label: "Student", sort_value: "null" }
 	];
 
+	const [filters, setFilters] = useState({
+		status: query.get("status") || null
+		// deal: query.get("deal") || null
+	});
+
+	const filterParams = [{ filterType: "select", filterValues: ["Full Time", "Part Time"], label: "Deal Name" }];
+
 	useEffect(
 		() => {
 			if (!store.interviews && store.agent) actions.getInterviews({ status: query.status });
@@ -27,12 +35,10 @@ export const InterviewList = () => {
 		[store.agent]
 	);
 
-	console.log("interviews:", store.interviews);
-
 	if (!store.interviews) return "loading...";
 
 	return (
-		<Container>
+		<Container fluid>
 			<h1>Pending Interviews</h1>
 			<Row>
 				<Col>
@@ -61,6 +67,10 @@ export const InterviewList = () => {
 						))}
 					</SmartTable>
 				</Col>
+				<Filters
+					filterParams={filterParams}
+					onChange={filterObject => setFilters({ ...filters, ...filterObject })}
+				/>
 			</Row>
 		</Container>
 	);

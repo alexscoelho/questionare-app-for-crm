@@ -73,7 +73,7 @@ export const CommunicationStatus = () => {
 				</>
 			);
 	};
-	console.log("Me refresque", store.currentDeal);
+
 	if (!store.currentDeal) return "Loading...";
 	return (
 		<Container fluid>
