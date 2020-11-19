@@ -119,6 +119,7 @@ class Deal(db.Model):
             "deal_attemps": self.deal_attemps,
             "contacted_at": self.contacted_at,
             "contact_id": self.contact_id,
+            "contact": self.contact.serialize_small(),
         }
 
 class ActivityTypes(enum.Enum):

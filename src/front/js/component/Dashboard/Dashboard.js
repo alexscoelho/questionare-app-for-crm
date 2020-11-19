@@ -128,7 +128,9 @@ export const Dashboard = () => {
 										{deal.contact.first_name} {deal.contact.last_name}
 									</Card.Title>
 									<Card.Subtitle className="mb-2 text-muted small">
-										{deal.contacted_at ? moment(deal.contacted_at).fromNow() : "never contacted"}
+										{deal.contacted_at
+											? `last contacted at: ${moment(deal.contacted_at).fromNow()}`
+											: "never contacted"}
 									</Card.Subtitle>
 									<Badge variant="secondary" className="mr-1">
 										{deal.communication_status}

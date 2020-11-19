@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, Agent, Deal, Interview, Questionnaire, Activity,Question, Answer, Option
 from api.utils import generate_sitemap, APIException
 from datetime import datetime
+from sqlalchemy import desc, asc
 from flask_jwt_simple import (
     jwt_required, create_jwt, get_jwt_identity
 )
@@ -96,7 +97,16 @@ def get_deals():
 
     sort = request.args.get('sort')
     if sort is not None and sort != "" and sort != "undefined":
-        deals = deals.order_by(sort)
+        order = 'desc'
+        _order = request.args.get('order')
+        if _order is not None and _order != "":
+            order = _order
+
+        if order == 'desc':
+            deals = deals.order_by(desc(sort))
+        else:
+            deals = deals.order_by(asc(sort))
+    
     deals = deals.all()
     
 

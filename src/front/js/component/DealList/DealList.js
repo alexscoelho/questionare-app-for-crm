@@ -1,14 +1,29 @@
 import React, { useState, useContext, useEffect } from "react";
 import "./DealList.scss";
 import { Context } from "../../store/appContext";
-
+import { useLocation } from "react-router-dom";
 import { SmartTable, TableRow } from "../SmartTable/SmartTable";
 import { Container, Row, Col, Button } from "react-bootstrap/";
+import { Filters } from "../Filters/Filters";
 
+function useQuery() {
+	return new URLSearchParams(useLocation().search);
+}
 export const DealList = () => {
 	const { store, actions } = useContext(Context);
-	const tableHeaders = ["Student", "Deal Name", "Aproved", "Score", "Interview Status"];
-
+	const query = useQuery();
+	const tableHeaders = [
+		{ label: "Student", sort_value: null },
+		{ label: "Deal Name", sort_value: "name" },
+		{ label: "Status", sort_value: "status" },
+		{ label: "Score", sort_value: "score" },
+		{ label: "Deal Attempts" }
+	];
+	const [filters, setFilters] = useState({
+		status: query.get("status") || null,
+		score: query.get("score") || null
+	});
+	console.log("filters", filters, query);
 	const handleClick = () => {
 		alert(`There ${store.candidates.filter(c => c.checked).length} store.candidates checked`);
 	};
@@ -17,7 +32,7 @@ export const DealList = () => {
 		if (store.candidates === null) actions.getDeals();
 	}, []);
 
-	console.log(store.candidates);
+	console.log("candidates", store.candidates);
 
 	return (
 		<Container fluid>
@@ -27,44 +42,33 @@ export const DealList = () => {
 					<Button style={{ marginBotton: 5 }} variant="light" onClick={handleClick}>
 						Actions
 					</Button>
-					<SmartTable headers={tableHeaders} handleSort={key => actions.getDeals({ sort: key })}>
+					<SmartTable
+						headers={tableHeaders}
+						handleSort={(key, order) => actions.getDeals({ sort: key, order })}>
 						{store.candidates !== null &&
-							store.candidates.map((c, index) => (
-								<TableRow
-									key={index}
-									data={c}
-									onToggle={value =>
-										store.candidates.map(deal => {
-											if (c.id === deal.id) deal.checked = value;
-											return deal;
-										})
-									}
-								/>
-							))}
+							store.candidates
+								.filter(deal => {
+									if (filters.status && deal.status != filters.status) return false;
+									if (filters.score && deal.status < deal.score) return false;
+									return true;
+								})
+								.map((c, index) => (
+									<TableRow
+										key={index}
+										data={c}
+										columns={[d => d.contact.first_name, "status", "name", "score", "deal_attemps"]}
+										onToggle={value =>
+											store.candidates.map(deal => {
+												if (c.id === deal.id) deal.checked = value;
+												return deal;
+											})
+										}
+									/>
+								))}
 					</SmartTable>
 				</Col>
-				<Col md={2} className="filter-options">
-					<p>Filter by:</p>
-					<Button variant="light" block>
-						{" "}
-						Interview status
-						<span>
-							<i className="fas fa-arrow-down" />
-						</span>
-					</Button>
-					<Button variant="light" block>
-						Approved status
-						<span>
-							<i className="fas fa-arrow-down" />
-						</span>
-					</Button>
-					<Button variant="light" block>
-						Score
-						<span>
-							<i className="fas fa-arrow-down" />
-						</span>
-					</Button>
-				</Col>
+				{/*                                                           { score: 3 }     */}
+				<Filters onChange={filterObject => setFilters({ ...filters, ...filterObject })} />
 			</Row>
 		</Container>
 	);

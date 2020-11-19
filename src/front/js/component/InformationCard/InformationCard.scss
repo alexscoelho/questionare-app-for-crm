@@ -1,7 +1,9 @@
 .notes-box {
     background-color: "#EFEFEF";
     border-radius: 7px;
-    padding-bottom: 5px
+    padding-bottom: 5px;
+    max-height: 300px;
+    overflow-y: scroll;
 }
 
 .notes-box span {
@@ -22,9 +24,9 @@
 }
 
 .notes-box li {
-    padding-top: 10px;
+    padding: 10px;
     list-style-type: none;
-    padding-left:10px
+    
 }
 
 .button.btn.btn-primary.btn-sm {

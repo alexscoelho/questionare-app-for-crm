@@ -53,8 +53,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getDeals: async (opt = {}) => {
 				const actions = getActions();
-				const { sort = "", score = "" } = opt;
-				const candidates = await actions.fetch(`${process.env.BACKEND_URL}/api/deals?sort=${sort}`);
+				const { sort = "", order = "desc", score = "" } = opt;
+				const candidates = await actions.fetch(
+					`${process.env.BACKEND_URL}/api/deals?sort=${sort}&order=${order}`
+				);
 				setStore({ candidates });
 			},
 			getQuestionnaire: async id => {

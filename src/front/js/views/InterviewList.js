@@ -12,7 +12,13 @@ export const InterviewList = () => {
 	const history = useHistory();
 	const query = useQuery();
 
-	const tableHeaders = ["Deal Name", "Scheduled Time", "Status", "Score", "Deal Attempts"];
+	const tableHeaders = [
+		{ label: "Deal Name", sort_value: "name" },
+		{ label: "Scheduled Time", sort_value: null },
+		{ label: "Status", sort_value: "status" },
+		{ label: "Score", sort_value: "score" },
+		{ label: "Student", sort_value: "null" }
+	];
 
 	useEffect(
 		() => {
@@ -21,7 +27,10 @@ export const InterviewList = () => {
 		[store.agent]
 	);
 
+	console.log("interviews:", store.interviews);
+
 	if (!store.interviews) return "loading...";
+
 	return (
 		<Container>
 			<h1>Pending Interviews</h1>
@@ -30,6 +39,13 @@ export const InterviewList = () => {
 					<SmartTable headers={tableHeaders} handleSort={key => actions.getDeals({ sort: key })}>
 						{store.interviews.map((interview, index) => (
 							<TableRow
+								columns={[
+									d => d.deal.name,
+									"scheduled_time",
+									"status",
+									"score_total",
+									e => e.deal.contact.first_name
+								]}
 								key={index}
 								data={interview}
 								handleRedirect={() =>
