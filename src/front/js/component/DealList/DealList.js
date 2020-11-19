@@ -16,14 +16,19 @@ export const DealList = () => {
 		{ label: "Student", sort_value: null },
 		{ label: "Deal Name", sort_value: "name" },
 		{ label: "Status", sort_value: "status" },
-		{ label: "Score", sort_value: "score" },
-		{ label: "Deal Attempts" }
+		{ label: "Score", sort_value: null },
+		{ label: "Deal Attempts", sort_value: "deal_attemps" }
 	];
 	const [filters, setFilters] = useState({
 		status: query.get("status") || null,
 		score: query.get("score") || null
 	});
-	console.log("filters", filters, query);
+
+	const filterObject = {
+		filterType: "select",
+		filterValues: ["Pending", "Aproved", "Rejected", "Not Interested"]
+	};
+
 	const handleClick = () => {
 		alert(`There ${store.candidates.filter(c => c.checked).length} store.candidates checked`);
 	};
@@ -31,8 +36,6 @@ export const DealList = () => {
 	useEffect(() => {
 		if (store.candidates === null) actions.getDeals();
 	}, []);
-
-	console.log("candidates", store.candidates);
 
 	return (
 		<Container fluid>
@@ -56,7 +59,7 @@ export const DealList = () => {
 									<TableRow
 										key={index}
 										data={c}
-										columns={[d => d.contact.first_name, "status", "name", "score", "deal_attemps"]}
+										columns={[d => d.contact.first_name, "name", "status", "score", "deal_attemps"]}
 										onToggle={value =>
 											store.candidates.map(deal => {
 												if (c.id === deal.id) deal.checked = value;
@@ -67,8 +70,12 @@ export const DealList = () => {
 								))}
 					</SmartTable>
 				</Col>
+
 				{/*                                                           { score: 3 }     */}
-				<Filters onChange={filterObject => setFilters({ ...filters, ...filterObject })} />
+				<Filters
+					filterObject={filterObject}
+					onChange={filterObject => setFilters({ ...filters, ...filterObject })}
+				/>
 			</Row>
 		</Container>
 	);
