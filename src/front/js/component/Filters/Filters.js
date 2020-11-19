@@ -2,29 +2,46 @@ import React from "react";
 import PropTypes from "prop-types";
 import "./Filters.scss";
 
-import { Row, Col, Button, Form } from "react-bootstrap/";
+import { Col, Form } from "react-bootstrap/";
 
-export const Filters = ({ filterObject }) => {
+export const Filters = ({ filterParams, onChange }) => {
 	return (
 		<Col md={2} className="filter-options">
 			<p>Filter by:</p>
-			{filterObject.filterType === "select" && (
-				<Form.Group controlId="exampleForm.ControlSelect1">
-					<Form.Control as="select">
-						{filterObject.filterValues.map((value, index) => (
-							<option key={index}>{value}</option>
-						))}
-					</Form.Control>
-				</Form.Group>
-			)}
+			{filterParams.map((filter, index) => {
+				if (filter.filterType === "select") {
+					return (
+						<Form.Group controlId="dealStatus">
+							<Form.Label>Deal Status</Form.Label>
+							<Form.Control as="select">
+								{filter.filterValues.map((value, index) => (
+									<option key={index}>{value}</option>
+								))}
+							</Form.Control>
+						</Form.Group>
+					);
+				}
+				if (filter.filterType === "range") {
+					return (
+						<Form>
+							<Form.Group controlId="formBasicRange">
+								<Form.Label>Score</Form.Label>
+								<Form.Control type="range" />
+							</Form.Group>
+						</Form>
+					);
+				}
+			})}
 		</Col>
 	);
 };
 
 Filters.propTypes = {
-	filterObject: PropTypes.object
+	filterParams: PropTypes.array,
+	onChange: PropTypes.func
 };
 
 Filters.defaultProps = {
-	filterObject: null
+	filterParams: [],
+	onChange: null
 };

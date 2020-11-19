@@ -24,10 +24,10 @@ export const DealList = () => {
 		score: query.get("score") || null
 	});
 
-	const filterObject = {
-		filterType: "select",
-		filterValues: ["Pending", "Aproved", "Rejected", "Not Interested"]
-	};
+	const filterParams = [
+		{ filterType: "select", filterValues: ["Pending", "Aproved", "Rejected", "Not Interested"] },
+		{ filterType: "range", filterValues: null }
+	];
 
 	const handleClick = () => {
 		alert(`There ${store.candidates.filter(c => c.checked).length} store.candidates checked`);
@@ -73,7 +73,7 @@ export const DealList = () => {
 
 				{/*                                                           { score: 3 }     */}
 				<Filters
-					filterObject={filterObject}
+					filterParams={filterParams}
 					onChange={filterObject => setFilters({ ...filters, ...filterObject })}
 				/>
 			</Row>
