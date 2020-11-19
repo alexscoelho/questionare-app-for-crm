@@ -13,7 +13,7 @@ export const InformationCard = ({ deal, onAddNewNote }) => {
 	const [formStatus, setFormStatus] = useState({ status: "idle", message: "" });
 
 	return (
-		<Card style={{ width: "22rem" }} className="ml-auto">
+		<Card style={{ width: "22rem" }} className="m-auto">
 			<Card.Body>
 				<Card.Title>Deal Information</Card.Title>
 				<Card.Text>
@@ -43,7 +43,9 @@ export const InformationCard = ({ deal, onAddNewNote }) => {
 							deal.activities.map(a => {
 								return (
 									<li key={a.id}>
-										{a.activity_type == "NOTE" && <i className="fas fa-trash-alt float-right" />}
+										{a.activity_type == "NOTE" && (
+											<i className="fas fa-trash-alt float-right p-3" />
+										)}
 										<h5 className="m-0">{a.details}</h5>
 										<span>{moment(a.created_at).fromNow()}</span>
 									</li>
@@ -51,9 +53,11 @@ export const InformationCard = ({ deal, onAddNewNote }) => {
 							})}
 					</div>
 				)}
-				<Card.Link style={{ marginTop: 5 }} onClick={() => setAddNote(true)} href="#">
+
+				<Card.Link style={{ marginTop: 5 }} onClick={() => setAddNote(!addNote)} href="#">
 					Add new note
 				</Card.Link>
+
 				{formStatus.status == "danger" && <Alert variant="danger">{formStatus.message}</Alert>}
 				{addNote && (
 					<>
