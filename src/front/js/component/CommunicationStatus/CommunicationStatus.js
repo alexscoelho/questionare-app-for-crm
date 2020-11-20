@@ -25,7 +25,7 @@ export const CommunicationStatus = () => {
 	const [showTextArea, setShowTextArea] = useState(false);
 
 	useEffect(() => {
-		actions.getDeal(params.dealId);
+		if (!store.currentDeal) actions.getDeal(params.dealId);
 	}, []);
 
 	const submitHandler = () => {

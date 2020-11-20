@@ -43,7 +43,7 @@ export const Dashboard = () => {
 		if (alert.callTo === "new")
 			actions
 				.redirectNextInterview({ status: "PENDING" })
-				.then(deal => console.log("deal:", deal) || history.push(`/deal/${deal[0].deal_id}`))
+				.then(deal => history.push(`/deal/${deal[0].deal_id}`))
 				.catch(error => setMessage({ label: error.message || error, type: "danger" }));
 		if (alert.callTo === "incomplete")
 			actions

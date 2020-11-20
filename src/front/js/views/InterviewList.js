@@ -28,6 +28,10 @@ export const InterviewList = () => {
 
 	const filterParams = [{ filterType: "select", filterValues: ["Full Time", "Part Time"], label: "Deal Name" }];
 
+	const handleClick = () => {
+		alert(`There ${store.candidates.filter(c => c.checked).length} store.candidates checked`);
+	};
+
 	useEffect(
 		() => {
 			if (!store.interviews && store.agent) actions.getInterviews({ status: query.status });
@@ -41,7 +45,10 @@ export const InterviewList = () => {
 		<Container fluid>
 			<h1>Pending Interviews</h1>
 			<Row>
-				<Col>
+				<Col md={8}>
+					<Button style={{ marginBotton: 5 }} variant="light" onClick={handleClick}>
+						Actions
+					</Button>
 					<SmartTable headers={tableHeaders} handleSort={key => actions.getDeals({ sort: key })}>
 						{store.interviews.map((interview, index) => (
 							<TableRow

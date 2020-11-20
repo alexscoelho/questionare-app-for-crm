@@ -11,7 +11,6 @@ import { InterviewActions } from "../InterviewActions";
 export const InterviewCall = () => {
 	const params = useParams();
 	const { store, actions } = useContext(Context);
-	console.log("deal", store.currentDeal);
 
 	useEffect(() => {
 		if (!store.interview) {
@@ -26,7 +25,6 @@ export const InterviewCall = () => {
 		}
 	}, []);
 
-	console.log("interview sanitazed", store.interview);
 	if (!store.interview) return "loading...";
 
 	return (

@@ -15,8 +15,10 @@ export const InterviewActions = () => {
 	const [message, setMessage] = useState({ label: "", type: "hidden" });
 
 	const handleSubmit = () => {
-		actions.updateInterview({ scheduled_time: date });
+		// i want first to popup a message for the user to confirm the change
+		actions.updateInterview({ scheduled_time: date }).then(interview => history.push("/"));
 	};
+
 	return (
 		<Navbar fixed="bottom" className="justify-content-end">
 			{message.type != "hidden" && (

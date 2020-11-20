@@ -16,7 +16,7 @@ export const DealList = () => {
 		{ label: "Student", sort_value: null },
 		{ label: "Deal Name", sort_value: "name" },
 		{ label: "Status", sort_value: "status" },
-		{ label: "Score", sort_value: null },
+		{ label: "Contacted at", sort_value: null },
 		{ label: "Deal Attempts", sort_value: "deal_attemps" }
 	];
 	const [filters, setFilters] = useState({
@@ -63,7 +63,13 @@ export const DealList = () => {
 									<TableRow
 										key={index}
 										data={c}
-										columns={[d => d.contact.first_name, "name", "status", "score", "deal_attemps"]}
+										columns={[
+											d => d.contact.first_name,
+											"name",
+											"status",
+											"contacted_at",
+											"deal_attemps"
+										]}
 										onToggle={value =>
 											store.candidates.map(deal => {
 												if (c.id === deal.id) deal.checked = value;

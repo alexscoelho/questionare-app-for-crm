@@ -132,6 +132,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				return data;
 			},
 			updateInterview: async payload => {
+				const store = getStore();
 				const actions = getActions();
 				const data = await actions.fetch(
 					`${process.env.BACKEND_URL}/api/deal/${store.currentDeal.id}/interview/${store.interview.id}`,

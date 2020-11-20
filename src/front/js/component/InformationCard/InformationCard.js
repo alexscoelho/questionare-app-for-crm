@@ -18,13 +18,13 @@ export const InformationCard = ({ deal, onAddNewNote }) => {
 				<Card.Title>Deal Information</Card.Title>
 				<Card.Text>
 					<p className="m-0">
+						<strong>Name:</strong> {deal.name}
+					</p>
+					<p className="m-0">
 						<strong>Status:</strong> {deal.communication_status}
 					</p>
 					<p className="m-0">
-						<strong>First Name:</strong> {deal.contact.first_name}
-					</p>
-					<p className="m-0">
-						<strong>Last Name:</strong> {deal.contact.last_name}
+						<strong>Student:</strong> {`${deal.contact.first_name} ${deal.contact.last_name}`}
 					</p>
 					<p className="m-0">
 						<strong>Email:</strong> {deal.contact.email}
