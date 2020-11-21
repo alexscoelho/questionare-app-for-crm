@@ -7,12 +7,12 @@ import moment from "moment";
 import { Container, Alert, Col, Row, Card, Badge } from "react-bootstrap/";
 import { useEffect } from "react";
 
-const STAGES = ["PENDING", "APPROVED", "REJECTED", "NOT_INSTERESTED"];
+const STAGES = ["PENDING", "APPROVED", "REJECTED", "NOT_INTERESTED"];
 const stage_color = {
 	PENDING: "warning",
 	APPROVED: "success",
 	REJECTED: "danger",
-	NOT_INSTERESTED: "secondary"
+	NOT_INTERESTED: "secondary"
 };
 export const Dashboard = () => {
 	const { store, actions } = useContext(Context);
@@ -22,7 +22,7 @@ export const Dashboard = () => {
 		PENDING: [],
 		APPROVED: [],
 		REJECTED: [],
-		NOT_INSTERESTED: []
+		NOT_INTERESTED: []
 	});
 	const [interviews, setInterviews] = useState({
 		PENDING: [],
@@ -64,7 +64,7 @@ export const Dashboard = () => {
 					PENDING: store.candidates.filter(c => c.status == "PENDING"),
 					APPROVED: store.candidates.filter(c => c.status == "APPROVED"),
 					REJECTED: store.candidates.filter(c => c.status == "REJECTED"),
-					NOT_INSTERESTED: store.candidates.filter(c => c.status == "NOT_INSTERESTED")
+					NOT_INTERESTED: store.candidates.filter(c => c.status == "NOT_INTERESTED")
 				});
 		},
 		[store.candidates]

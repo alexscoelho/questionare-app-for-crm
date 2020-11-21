@@ -194,6 +194,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 				});
 				return data;
+			},
+			deleteNote: async activityId => {
+				const actions = getActions();
+				const data = await actions.fetch(`${process.env.BACKEND_URL}/api/activity/${activityId}`, {
+					method: "PUT"
+				});
+				return data;
 			}
 		}
 	};

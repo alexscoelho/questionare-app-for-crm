@@ -5,7 +5,7 @@ import { Context } from "../../store/appContext";
 import PropTypes from "prop-types";
 import { Card, Button, Alert, Popover } from "react-bootstrap/";
 
-export const InformationCard = ({ deal, onAddNewNote }) => {
+export const InformationCard = ({ deal, onAddNewNote, onDeleteNote }) => {
 	if (!deal) return "loading...";
 
 	const [addNote, setAddNote] = useState(false);
@@ -40,17 +40,23 @@ export const InformationCard = ({ deal, onAddNewNote }) => {
 					<div className="notes-box" style={{ backgroundColor: "#EFEFEF" }}>
 						<div className="arrow" />
 						{Array.isArray(deal.activities) &&
-							deal.activities.map(a => {
-								return (
-									<li key={a.id}>
-										{a.activity_type == "NOTE" && (
-											<i className="fas fa-trash-alt float-right p-3" />
-										)}
-										<h5 className="m-0">{a.details}</h5>
-										<span>{moment(a.created_at).fromNow()}</span>
-									</li>
-								);
-							})}
+							deal.activities
+								.slice(0)
+								.reverse()
+								.map(a => {
+									return (
+										<li key={a.id}>
+											{a.activity_type == "NOTE" && (
+												<i
+													onClick={onDeleteNote(a.id).then(message => console.log(message))}
+													className="fas fa-trash-alt float-right p-3"
+												/>
+											)}
+											<h5 className="m-0">{a.details}</h5>
+											<span>{moment(a.created_at).fromNow()}</span>
+										</li>
+									);
+								})}
 					</div>
 				)}
 
@@ -88,9 +94,11 @@ export const InformationCard = ({ deal, onAddNewNote }) => {
 };
 InformationCard.propTypes = {
 	deal: PropTypes.object,
-	onAddNewNote: PropTypes.func
+	onAddNewNote: PropTypes.func,
+	onDeleteNote: PropTypes.func
 };
 InformationCard.defaultProps = {
 	deal: null,
-	onAddNewNote: null
+	onAddNewNote: null,
+	onDeleteNote: null
 };

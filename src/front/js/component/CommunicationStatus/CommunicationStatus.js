@@ -119,6 +119,7 @@ export const CommunicationStatus = () => {
 					<InformationCard
 						deal={store.currentDeal}
 						onAddNewNote={noteContent => actions.updateDeal(params.dealId, { note: noteContent })}
+						onDeleteNote={activityId => actions.deleteNote(activityId)}
 					/>
 				</Col>
 			</Row>

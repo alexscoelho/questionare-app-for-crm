@@ -78,6 +78,7 @@ class CommunicationStatus(enum.Enum):
     NO_ANSWER = 'NO_ANSWER'
     NOT_AVAILABLE = 'NOT_AVAILABLE'
     COMPLETE = 'COMPLETE'
+    NOT_INTERESTED = 'NOT_INTERESTED'
 class Deal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=False, nullable=False)
