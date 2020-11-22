@@ -48,7 +48,11 @@ export const InformationCard = ({ deal, onAddNewNote, onDeleteNote }) => {
 										<li key={a.id}>
 											{a.activity_type == "NOTE" && (
 												<i
-													onClick={onDeleteNote(a.id).then(message => console.log(message))}
+													onClick={() =>
+														onDeleteNote(a.id, a.deal_id).then(message =>
+															console.log(message)
+														)
+													}
 													className="fas fa-trash-alt float-right p-3"
 												/>
 											)}

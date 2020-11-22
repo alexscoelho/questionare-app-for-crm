@@ -329,16 +329,24 @@ def get_single_deal(deal_id):
 
         return deal1.serialize(), 200
 
-@api.route('/activity/<int:activity_id>', methods=['PUT'])
+@api.route('/activity/<int:activity_id>', methods=['DELETE'])
 # @jwt_required
 def handle_activity(activity_id):
+    body = request.get_json()
     activity1 = Activity.query.get(activity_id)
+    activities = Activity.query.filter_by(deal_id=body['deal_id'])
     if activity1 is None:
         raise APIException('No activity found')
     db.session.delete(activity1)
     db.session.commit()
 
-    return "Note deleted", 200
+    all_activities = list(map(lambda x: x.serialize(), activities))
+
+    return jsonify(all_activities), 200
+
+
+    
+    
 
 
 

@@ -195,11 +195,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 				});
 				return data;
 			},
-			deleteNote: async activityId => {
+			deleteNote: async (activityId, dealId) => {
+				const store = getStore();
 				const actions = getActions();
 				const data = await actions.fetch(`${process.env.BACKEND_URL}/api/activity/${activityId}`, {
-					method: "PUT"
+					method: "DELETE",
+					body: JSON.stringify({
+						deal_id: dealId
+					})
 				});
+				setStore((store.currentDeal.activities = data));
 				return data;
 			}
 		}
