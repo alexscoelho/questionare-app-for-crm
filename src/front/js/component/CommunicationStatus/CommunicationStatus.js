@@ -23,6 +23,7 @@ export const CommunicationStatus = () => {
 		{ label: "Re-schedule Interview", value: "schedule_interview" }
 	];
 	const [showTextArea, setShowTextArea] = useState(false);
+	const [showConfirmationSchedule, setShowConfirmationSchedule] = useState(false);
 
 	useEffect(() => {
 		if (!store.currentDeal) actions.getDeal(params.dealId);
@@ -74,6 +75,21 @@ export const CommunicationStatus = () => {
 			);
 	};
 
+	const confirmationSchedule = (
+		<div style={{ margin: 5 }}>
+			<p>{`Confirm you want to reschedule this interview for ${formData.dateTime}?`}</p>
+			<Button onClick={submitHandler}>Yes</Button>
+			<Button
+				style={{ marginLeft: 5 }}
+				onClick={() => {
+					setShowConfirmationSchedule(false);
+					setShowTextArea(true);
+				}}>
+				No
+			</Button>
+		</div>
+	);
+
 	if (!store.currentDeal) return "Loading...";
 	return (
 		<Container fluid>
@@ -99,6 +115,8 @@ export const CommunicationStatus = () => {
 							);
 						})}
 					</Form.Group>
+					{showConfirmationSchedule && confirmationSchedule}
+					{formStatus.status == "danger" && <Alert variant="danger">{formStatus.message}</Alert>}
 					{showTextArea && (
 						<>
 							{pickDate(formData)}
@@ -107,8 +125,14 @@ export const CommunicationStatus = () => {
 							</Form.Group>
 
 							<Form.Group controlId="formBasicEmail">
-								{formStatus.status == "danger" && <Alert variant="danger">{formStatus.message}</Alert>}
-								<Button onClick={submitHandler} variant="primary" type="submit" block>
+								<Button
+									onClick={() => {
+										setShowConfirmationSchedule(true);
+										setShowTextArea(false);
+									}}
+									variant="primary"
+									type="submit"
+									block>
 									Continue
 								</Button>
 							</Form.Group>

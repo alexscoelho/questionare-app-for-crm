@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import "./DealList.scss";
 import { Context } from "../../store/appContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import { SmartTable, TableRow } from "../SmartTable/SmartTable";
 import { Container, Row, Col, Button } from "react-bootstrap/";
 import { Filters } from "../Filters/Filters";
@@ -11,6 +11,7 @@ function useQuery() {
 }
 export const DealList = () => {
 	const { store, actions } = useContext(Context);
+	const history = useHistory();
 	const query = useQuery();
 	const tableHeaders = [
 		{ label: "Student", sort_value: null },
@@ -63,6 +64,7 @@ export const DealList = () => {
 									<TableRow
 										key={index}
 										data={c}
+										handleRedirect={() => history.push(`/deal/${c.id}`)}
 										columns={[
 											d => d.contact.first_name,
 											"name",

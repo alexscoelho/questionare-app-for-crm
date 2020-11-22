@@ -21,7 +21,7 @@ export const InformationCard = ({ deal, onAddNewNote, onDeleteNote }) => {
 						<strong>Name:</strong> {deal.name}
 					</p>
 					<p className="m-0">
-						<strong>Status:</strong> {deal.communication_status}
+						<strong>Status:</strong> {deal.communication_status || "-"}
 					</p>
 					<p className="m-0">
 						<strong>Student:</strong> {`${deal.contact.first_name} ${deal.contact.last_name}`}
