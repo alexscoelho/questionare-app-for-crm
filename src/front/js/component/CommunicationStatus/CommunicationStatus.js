@@ -25,6 +25,14 @@ export const CommunicationStatus = () => {
 	const [showTextArea, setShowTextArea] = useState(false);
 	const [showConfirmationSchedule, setShowConfirmationSchedule] = useState(false);
 
+	// let nextDealInterview = null;
+	// if (store.currentDeal.length > 1) {
+	// 	nextDealInterview = store.currentDeal[params.dealId];
+	// }
+
+	// console.log("nextDealInterview:", nextDealInterview);
+	console.log("currentDeal:", store.currentDeal);
+
 	useEffect(() => {
 		if (!store.currentDeal) actions.getDeal(params.dealId);
 	}, []);
@@ -127,8 +135,12 @@ export const CommunicationStatus = () => {
 							<Form.Group controlId="formBasicEmail">
 								<Button
 									onClick={() => {
-										setShowConfirmationSchedule(true);
-										setShowTextArea(false);
+										if (formData.selected === "schedule_interview") {
+											setShowConfirmationSchedule(true);
+											setShowTextArea(false);
+										} else {
+											submitHandler();
+										}
 									}}
 									variant="primary"
 									type="submit"

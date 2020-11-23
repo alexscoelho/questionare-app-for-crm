@@ -22,7 +22,7 @@ export const DealList = () => {
 	];
 	const [filters, setFilters] = useState({
 		status: query.get("status") || null,
-		score: query.get("score") || null
+		deal_attemps: query.get("deal_attemps") || null
 	});
 
 	const filterParams = [

@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, Agent, Deal, Interview, Questionnaire, Activity,Question, Answer, Option
 from api.utils import generate_sitemap, APIException
 from datetime import datetime
+import random
 from sqlalchemy import desc, asc
 from flask_jwt_simple import (
     jwt_required, create_jwt, get_jwt_identity
@@ -259,7 +260,7 @@ def get_next_interview(agent_id):
 
     agent = get_jwt_identity()
     if agent["role"] != "admin" and agent["id"] != agent_id:
-        raise APIException("You don't have access to this agent deails")
+        raise APIException("You don't have access to this agent details")
 
     all_interviews = Interview.query.filter_by(agent_id=agent_id)
     status = request.args.get('status')
@@ -273,9 +274,15 @@ def get_next_interview(agent_id):
     if all_interviews.count() == 0:
         raise APIException(f'No {status} interviews')
 
-    
 
-    return jsonify([a.serialize() for a in all_interviews]), 200
+    interview_list = jsonify([a.serialize() for a in all_interviews])
+
+    # random_indx = random.randrange(len(interview_list)) 
+    
+    return interview_list.response[0], 200
+
+    # return jsonify([a.serialize() for a in all_interviews]), 200
+    
 
 @api.route('/interview/<int:interview_id>', methods=['GET'])
 @jwt_required

@@ -22,8 +22,7 @@ export const InterviewList = () => {
 	];
 
 	const [filters, setFilters] = useState({
-		status: query.get("status") || null
-		// deal: query.get("deal") || null
+		name: query.get("name") || null
 	});
 
 	const filterParams = [{ filterType: "select", filterValues: ["Full Time", "Part Time"], label: "Deal Name" }];

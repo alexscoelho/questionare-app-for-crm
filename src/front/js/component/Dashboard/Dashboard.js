@@ -40,10 +40,14 @@ export const Dashboard = () => {
 
 	const handleStepClick = alert => {
 		setAlertData({ ...alertData, selected: alert.callTo });
+
 		if (alert.callTo === "new")
 			actions
 				.redirectNextInterview({ status: "PENDING" })
-				.then(deal => history.push(`/deal/${deal[0].deal_id}`))
+				.then(deal => {
+					// const random = Math.floor(Math.random() * deal.length);
+					history.push(`/deal/${deal.deal_id}`);
+				})
 				.catch(error => setMessage({ label: error.message || error, type: "danger" }));
 		if (alert.callTo === "incomplete")
 			actions
@@ -73,12 +77,13 @@ export const Dashboard = () => {
 		() => {
 			if (!store.interviews) actions.getInterviews();
 			else if (Array.isArray(store.interviews))
-				setInterviews({
-					PENDING: store.candidates.filter(c => c.status == "PENDING"),
-					DRAFT: store.candidates.filter(c => c.status == "DRAFT"),
-					POSTPONED: store.candidates.filter(c => c.status == "POSTPONED"),
-					COMPLETED: store.candidates.filter(c => c.status == "COMPLETED")
-				});
+				if (store.candidates)
+					setInterviews({
+						PENDING: store.candidates.filter(c => c.status == "PENDING"),
+						DRAFT: store.candidates.filter(c => c.status == "DRAFT"),
+						POSTPONED: store.candidates.filter(c => c.status == "POSTPONED"),
+						COMPLETED: store.candidates.filter(c => c.status == "COMPLETED")
+					});
 		},
 		[store.candidates]
 	);
@@ -120,6 +125,7 @@ export const Dashboard = () => {
 								className="hovered"
 								onClick={() => {
 									if (deal.status == "PENDING") {
+										actions.getDeal(deal.id);
 										history.push(`/deal/${deal.id}`);
 									}
 								}}>

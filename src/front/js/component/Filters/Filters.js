@@ -14,7 +14,11 @@ export const Filters = ({ filterParams, onChange }) => {
 						<Form key={index}>
 							<Form.Group controlId="dealStatus">
 								<Form.Label>{filter.label}</Form.Label>
-								<Form.Control as="select" onChange={event => onChange({ status: event.target.value })}>
+								<Form.Control
+									as="select"
+									onChange={event =>
+										onChange({ status: event.target.value, deal_attemps: event.target.value })
+									}>
 									{filter.filterValues.map((value, index) => (
 										<option key={index}>{value}</option>
 									))}
