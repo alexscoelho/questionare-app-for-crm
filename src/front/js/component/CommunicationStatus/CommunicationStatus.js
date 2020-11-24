@@ -25,14 +25,6 @@ export const CommunicationStatus = () => {
 	const [showTextArea, setShowTextArea] = useState(false);
 	const [showConfirmationSchedule, setShowConfirmationSchedule] = useState(false);
 
-	// let nextDealInterview = null;
-	// if (store.currentDeal.length > 1) {
-	// 	nextDealInterview = store.currentDeal[params.dealId];
-	// }
-
-	// console.log("nextDealInterview:", nextDealInterview);
-	console.log("currentDeal:", store.currentDeal);
-
 	useEffect(() => {
 		if (!store.currentDeal) actions.getDeal(params.dealId);
 	}, []);

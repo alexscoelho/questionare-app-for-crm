@@ -21,26 +21,33 @@ export const DealList = () => {
 		{ label: "Deal Attempts", sort_value: "deal_attemps" }
 	];
 	const [filters, setFilters] = useState({
-		status: query.get("status") || null,
-		deal_attemps: query.get("deal_attemps") || null
+		status: "" || null
 	});
+
+	console.log("filters:", filters);
 
 	const filterParams = [
 		{
 			filterType: "select",
 			filterValues: ["PENDING", "APROVED", "REJECTED", "NOT_INTERESTED"],
 			label: "Deal Status"
-		},
-		{ filterType: "range", filterValues: null }
+		}
 	];
 
 	const handleClick = () => {
 		alert(`There ${store.candidates.filter(c => c.checked).length} store.candidates checked`);
 	};
 
-	useEffect(() => {
-		if (store.candidates === null) actions.getDeals();
-	}, []);
+	useEffect(
+		() => {
+			if (store.candidates === null) {
+				actions.getDeals();
+			} else if (filters.status !== "" || filters.status !== null) {
+				actions.getDeals({ status: filters.status });
+			}
+		},
+		[filters]
+	);
 
 	return (
 		<Container fluid>
@@ -85,7 +92,7 @@ export const DealList = () => {
 
 				<Filters
 					filterParams={filterParams}
-					onChange={filterObject => setFilters({ ...filters, ...filterObject })}
+					onChangeFilters={filterTerm => setFilters({ status: filterTerm })}
 				/>
 			</Row>
 		</Container>

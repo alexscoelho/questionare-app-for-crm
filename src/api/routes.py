@@ -92,6 +92,17 @@ def get_deals():
     if agent["role"] != "admin": 
         deals = deals.filter_by(agent_id=agent["id"])
 
+    status = request.args.get('status')
+    if status is not None and status != "" and status != "undefined":
+        if status == 'PENDING':
+            deals = deals.filter_by(status=status)
+        if status == 'APPROVED':
+            deals = deals.filter_by(status=status)
+        if status == 'REJECTED':
+            deals = deals.filter_by(status=status)
+        if status == 'NOT_INTERESTED':
+            deals = deals.filter_by(status=status)
+
     # score = request.args.get('score')
     # if score is not None and score != "":
     #     deals = deals.filter_by(score=score)
@@ -273,15 +284,9 @@ def get_next_interview(agent_id):
     
     if all_interviews.count() == 0:
         raise APIException(f'No {status} interviews')
+   
 
-
-    interview_list = jsonify([a.serialize() for a in all_interviews])
-
-    # random_indx = random.randrange(len(interview_list)) 
-    
-    return interview_list.response[0], 200
-
-    # return jsonify([a.serialize() for a in all_interviews]), 200
+    return jsonify([a.serialize() for a in all_interviews]), 200
     
 
 @api.route('/interview/<int:interview_id>', methods=['GET'])

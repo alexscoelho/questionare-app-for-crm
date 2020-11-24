@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import "./Filters.scss";
 
-import { Col, Form } from "react-bootstrap/";
+import { Col, Form, Button } from "react-bootstrap/";
 
-export const Filters = ({ filterParams, onChange }) => {
+export const Filters = ({ filterParams, onChangeFilters, handleSearch }) => {
 	return (
 		<Col md={2} className="filter-options">
 			<p>Filter by:</p>
@@ -14,11 +14,7 @@ export const Filters = ({ filterParams, onChange }) => {
 						<Form key={index}>
 							<Form.Group controlId="dealStatus">
 								<Form.Label>{filter.label}</Form.Label>
-								<Form.Control
-									as="select"
-									onChange={event =>
-										onChange({ status: event.target.value, deal_attemps: event.target.value })
-									}>
+								<Form.Control as="select" onChange={event => onChangeFilters(event.target.value)}>
 									{filter.filterValues.map((value, index) => (
 										<option key={index}>{value}</option>
 									))}
@@ -27,17 +23,16 @@ export const Filters = ({ filterParams, onChange }) => {
 						</Form>
 					);
 				}
-				if (filter.filterType === "range") {
+				if (filter.filterType === "search") {
 					return (
-						<Form key={index} onChange={onChange}>
-							<Form.Group controlId="formBasicRange">
-								<Form.Label>{filter.label}</Form.Label>
-								<Form.Control
-									type="range"
-									onChange={event => onChange({ score: event.target.value })}
-								/>
-							</Form.Group>
-						</Form>
+						<div>
+							<p>{filter.label}</p>
+							<input
+								onChange={event => handleSearch(event.target.value)}
+								type="text"
+								placeholder="search"
+							/>
+						</div>
 					);
 				}
 			})}
@@ -47,10 +42,12 @@ export const Filters = ({ filterParams, onChange }) => {
 
 Filters.propTypes = {
 	filterParams: PropTypes.array,
-	onChange: PropTypes.func
+	onChangeFilters: PropTypes.func,
+	handleSearch: PropTypes.func
 };
 
 Filters.defaultProps = {
 	filterParams: [],
-	onChange: null
+	onChangeFilters: null,
+	handleSearch: null
 };

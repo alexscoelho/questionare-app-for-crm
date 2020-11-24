@@ -44,10 +44,7 @@ export const Dashboard = () => {
 		if (alert.callTo === "new")
 			actions
 				.redirectNextInterview({ status: "PENDING" })
-				.then(deal => {
-					// const random = Math.floor(Math.random() * deal.length);
-					history.push(`/deal/${deal.deal_id}`);
-				})
+				.then(interview => history.push(`/deal/${interview.deal_id}`))
 				.catch(error => setMessage({ label: error.message || error, type: "danger" }));
 		if (alert.callTo === "incomplete")
 			actions

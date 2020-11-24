@@ -52,10 +52,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 				if (store && store.agent) moment.tz.setDefault(store.agent.time_zone);
 			},
 			getDeals: async (opt = {}) => {
+				const { status = "" } = opt;
 				const actions = getActions();
 				const { sort = "", order = "desc", score = "" } = opt;
 				const candidates = await actions.fetch(
-					`${process.env.BACKEND_URL}/api/deals?sort=${sort}&order=${order}`
+					`${process.env.BACKEND_URL}/api/deals?sort=${sort}&order=${order}&status=${status}`
 				);
 				setStore({ candidates });
 			},
@@ -150,8 +151,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const data = await actions.fetch(
 					`${process.env.BACKEND_URL}/api/agent/${store.agent.id}/interview/next?status=${status}`
 				);
-				setStore({ currentDeal: data });
-				return data;
+				let interview = Array.isArray(data) && data.length > 0 ? data[0] : null;
+				return interview;
 			},
 			startInterview: async (dealId, formData) => {
 				const store = getStore();
@@ -204,6 +205,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						deal_id: dealId
 					})
 				});
+				currentDeal;
 				setStore((store.currentDeal.activities = data));
 				return data;
 			}

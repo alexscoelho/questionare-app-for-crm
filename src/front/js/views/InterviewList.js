@@ -22,10 +22,13 @@ export const InterviewList = () => {
 	];
 
 	const [filters, setFilters] = useState({
-		name: query.get("name") || null
+		status: query.get("status") || null,
+		name: "" || null
 	});
 
-	const filterParams = [{ filterType: "select", filterValues: ["Full Time", "Part Time"], label: "Deal Name" }];
+	const [term, setTerm] = useState("");
+
+	const filterParams = [{ filterType: "search", filterValues: null, label: "Deal Name" }];
 
 	const handleClick = () => {
 		alert(`There ${store.candidates.filter(c => c.checked).length} store.candidates checked`);
@@ -75,6 +78,7 @@ export const InterviewList = () => {
 				</Col>
 				<Filters
 					filterParams={filterParams}
+					handleSearch={term => setTerm(term)}
 					onChange={filterObject => setFilters({ ...filters, ...filterObject })}
 				/>
 			</Row>
