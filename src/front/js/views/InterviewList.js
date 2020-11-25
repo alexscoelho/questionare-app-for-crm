@@ -29,7 +29,7 @@ export const InterviewList = () => {
 	const filterParams = [{ filterType: "search", filterValues: null, label: "Deal Name" }];
 
 	const handleClick = () => {
-		alert(`There ${store.candidates.filter(c => c.checked).length} store.candidates checked`);
+		alert(`There ${store.allDeals.filter(c => c.checked).length} store.allDeals checked`);
 	};
 
 	useEffect(
@@ -61,9 +61,10 @@ export const InterviewList = () => {
 								]}
 								key={index}
 								data={interview}
-								handleRedirect={() =>
-									history.push(`/deal/${interview.deal_id}/interview/${interview.id}`)
-								}
+								handleRedirect={() => {
+									actions.getDeal(interview.deal_id);
+									history.push(`/deal/${interview.deal_id}/interview/${interview.id}`);
+								}}
 								onToggle={value =>
 									store.interviews.map(i => {
 										if (interview.id === i.id) i.checked = value;

@@ -59,31 +59,32 @@ export const Dashboard = () => {
 
 	useEffect(
 		() => {
-			if (!store.candidates) actions.getDeals();
-			else if (Array.isArray(store.candidates))
+			if (!store.allDeals) actions.getDeals();
+			else if (Array.isArray(store.allDeals))
 				setDeals({
-					PENDING: store.candidates.filter(c => c.status == "PENDING"),
-					APPROVED: store.candidates.filter(c => c.status == "APPROVED"),
-					REJECTED: store.candidates.filter(c => c.status == "REJECTED"),
-					NOT_INTERESTED: store.candidates.filter(c => c.status == "NOT_INTERESTED")
+					PENDING: store.allDeals.filter(c => c.status == "PENDING"),
+					APPROVED: store.allDeals.filter(c => c.status == "APPROVED"),
+					REJECTED: store.allDeals.filter(c => c.status == "REJECTED"),
+					NOT_INTERESTED: store.allDeals.filter(c => c.status == "NOT_INTERESTED")
 				});
 		},
-		[store.candidates]
+		[store.allDeals]
 	);
 	useEffect(
 		() => {
 			if (!store.interviews) actions.getInterviews();
 			else if (Array.isArray(store.interviews))
-				if (store.candidates)
+				if (store.allDeals)
 					setInterviews({
-						PENDING: store.candidates.filter(c => c.status == "PENDING"),
-						DRAFT: store.candidates.filter(c => c.status == "DRAFT"),
-						POSTPONED: store.candidates.filter(c => c.status == "POSTPONED"),
-						COMPLETED: store.candidates.filter(c => c.status == "COMPLETED")
+						PENDING: store.allDeals.filter(c => c.status == "PENDING"),
+						DRAFT: store.allDeals.filter(c => c.status == "DRAFT"),
+						POSTPONED: store.allDeals.filter(c => c.status == "POSTPONED"),
+						COMPLETED: store.allDeals.filter(c => c.status == "COMPLETED")
 					});
 		},
-		[store.candidates]
+		[store.allDeals]
 	);
+
 	return (
 		<Container className="dashboard">
 			{message.type != "hidden" && (
@@ -138,7 +139,12 @@ export const Dashboard = () => {
 									<Badge variant="secondary" className="mr-1">
 										{deal.communication_status}
 									</Badge>
-									<Badge variant={stage_color[deal.status]}>{deal.status}</Badge>
+									<Badge className="mr-1" variant={stage_color[deal.status]}>
+										{deal.status}
+									</Badge>
+									{deal.interview.length > 0 && deal.interview[0].status === "COMPLETED" ? (
+										<Badge variant="success">{`INTERVIEW ${deal.interview[0].status}`}</Badge>
+									) : null}
 								</Card.Body>
 							</Card>
 						))}

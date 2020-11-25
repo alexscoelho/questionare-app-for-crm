@@ -35,12 +35,12 @@ export const DealList = () => {
 	];
 
 	const handleClick = () => {
-		alert(`There ${store.candidates.filter(c => c.checked).length} store.candidates checked`);
+		alert(`There ${store.allDeals.filter(c => c.checked).length} store.allDeals checked`);
 	};
 
 	useEffect(
 		() => {
-			if (store.candidates === null) {
+			if (store.allDeals === null) {
 				actions.getDeals();
 			} else if (filters.status !== "" || filters.status !== null) {
 				actions.getDeals({ status: filters.status });
@@ -60,8 +60,8 @@ export const DealList = () => {
 					<SmartTable
 						headers={tableHeaders}
 						handleSort={(key, order) => actions.getDeals({ sort: key, order })}>
-						{store.candidates !== null &&
-							store.candidates
+						{store.allDeals !== null &&
+							store.allDeals
 								.filter(deal => {
 									if (filters.status && deal.status != filters.status) return false;
 									if (filters.score && deal.status < deal.score) return false;
@@ -71,7 +71,10 @@ export const DealList = () => {
 									<TableRow
 										key={index}
 										data={c}
-										handleRedirect={() => history.push(`/deal/${c.id}`)}
+										handleRedirect={() => {
+											actions.getDeal(c.id);
+											history.push(`/deal/${c.id}`);
+										}}
 										columns={[
 											d => d.contact.first_name,
 											"name",
@@ -80,7 +83,7 @@ export const DealList = () => {
 											"deal_attemps"
 										]}
 										onToggle={value =>
-											store.candidates.map(deal => {
+											store.allDeals.map(deal => {
 												if (c.id === deal.id) deal.checked = value;
 												return deal;
 											})

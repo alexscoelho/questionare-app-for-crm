@@ -3,7 +3,7 @@ import moment from "moment-timezone";
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			candidates: null,
+			allDeals: null,
 			questionnaire: null,
 			interview: null,
 			interviews: null,
@@ -55,10 +55,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const { status = "" } = opt;
 				const actions = getActions();
 				const { sort = "", order = "desc", score = "" } = opt;
-				const candidates = await actions.fetch(
+				const allDeals = await actions.fetch(
 					`${process.env.BACKEND_URL}/api/deals?sort=${sort}&order=${order}&status=${status}`
 				);
-				setStore({ candidates });
+				setStore({ allDeals });
 			},
 			getQuestionnaire: async id => {
 				const actions = getActions();
@@ -117,11 +117,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify(dealBody)
 				});
 				const store = getStore();
-				const _candidates = store.candidates || [];
-				const dealExists = _candidates.find(d => d.id == data.id);
+				const _allDeals = store.allDeals || [];
+				const dealExists = _allDeals.find(d => d.id == data.id);
 				if (dealExists) {
 					setStore({
-						candidates: store.candidates.map(c => {
+						allDeals: store.allDeals.map(c => {
 							if (c.id == data.id) return data;
 							else return c;
 						}),
@@ -129,7 +129,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 				} else {
 					setStore({
-						candidates: _candidates.concat(data),
+						allDeals: _allDeals.concat(data),
 						currentDeal: data
 					});
 				}
