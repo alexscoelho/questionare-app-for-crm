@@ -4,7 +4,10 @@ import "./Filters.scss";
 
 import { Col, Form, Button } from "react-bootstrap/";
 
-export const Filters = ({ filterParams, onChangeFilters, handleSearch }) => {
+export const Filters = ({ filterParams, onChangeFilters, handleSearch, onSearch, filterObject }) => {
+	const handleOnSearch = () => {
+		onSearch(filterObject.deal_name);
+	};
 	return (
 		<Col md={2} className="filter-options">
 			<p>Filter by:</p>
@@ -28,10 +31,13 @@ export const Filters = ({ filterParams, onChangeFilters, handleSearch }) => {
 						<div>
 							<p>{filter.label}</p>
 							<input
-								onChange={event => handleSearch(event.target.value)}
+								onChange={event => handleSearch({ deal_name: event.target.value })}
 								type="text"
 								placeholder="search"
 							/>
+							<Button size="sm" style={{ marginTop: 5 }} onClick={() => handleOnSearch()}>
+								search
+							</Button>
 						</div>
 					);
 				}
@@ -43,11 +49,15 @@ export const Filters = ({ filterParams, onChangeFilters, handleSearch }) => {
 Filters.propTypes = {
 	filterParams: PropTypes.array,
 	onChangeFilters: PropTypes.func,
-	handleSearch: PropTypes.func
+	handleSearch: PropTypes.func,
+	onSearch: PropTypes.func,
+	filterObject: PropTypes.object
 };
 
 Filters.defaultProps = {
 	filterParams: [],
 	onChangeFilters: null,
-	handleSearch: null
+	handleSearch: null,
+	onSearch: null,
+	filterObject: {}
 };

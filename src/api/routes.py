@@ -12,6 +12,7 @@ from flask_jwt_simple import (
 )
 
 
+
 api = Blueprint('api', __name__)
 
 
@@ -280,13 +281,26 @@ def get_next_interview(agent_id):
     else:
         status = ""
 
+    # Inner Join 
+    deal_name = request.args.get('deal_name')
+    if deal_name is not None and deal_name != "":
+        interview_by_deal = None
+        join_result = db.session.query(Interview,Deal).join(Deal).filter(Deal.name == deal_name).all()
+        interview_by_deal = join_result
+        # Extract value from tuple in list
+        result_deal = [x[0].serialize() for x in interview_by_deal] 
+        print('interview_by_deal:', result_deal)
+        if result_deal is not None:
+            return jsonify(result_deal), 200
+
     all_interviews = all_interviews.order_by('starting_time')
     
     if all_interviews.count() == 0:
         raise APIException(f'No {status} interviews')
    
-
-    return jsonify([a.serialize() for a in all_interviews]), 200
+    else:
+        return jsonify([a.serialize() for a in all_interviews]), 200
+    
     
 
 @api.route('/interview/<int:interview_id>', methods=['GET'])

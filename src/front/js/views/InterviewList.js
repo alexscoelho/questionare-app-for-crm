@@ -23,10 +23,8 @@ export const InterviewList = () => {
 
 	const [filters, setFilters] = useState({
 		status: query.get("status") || null,
-		name: "" || null
+		deal_name: "" || null
 	});
-
-	const [term, setTerm] = useState("");
 
 	const filterParams = [{ filterType: "search", filterValues: null, label: "Deal Name" }];
 
@@ -78,8 +76,9 @@ export const InterviewList = () => {
 				</Col>
 				<Filters
 					filterParams={filterParams}
-					handleSearch={term => setTerm(term)}
-					onChange={filterObject => setFilters({ ...filters, ...filterObject })}
+					handleSearch={filterObject => setFilters({ ...filters, ...filterObject })}
+					onSearch={searchTerm => actions.getInterviews({ ...filters, deal_name: searchTerm })}
+					filterObject={filters}
 				/>
 			</Row>
 		</Container>

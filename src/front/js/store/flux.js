@@ -100,10 +100,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getInterviews: async (options = {}) => {
 				const { status = "" } = options;
+				const { deal_name = "" } = options;
 				const store = getStore();
 				const actions = getActions();
 				const data = await actions.fetch(
-					`${process.env.BACKEND_URL}/api/agent/${store.agent.id}/interview/next?status=${status}`
+					`${process.env.BACKEND_URL}/api/agent/${
+						store.agent.id
+					}/interview/next?status=${status}&deal_name=${deal_name}`
 				);
 				setStore({ interviews: Array.isArray(data) ? data : [] });
 			},

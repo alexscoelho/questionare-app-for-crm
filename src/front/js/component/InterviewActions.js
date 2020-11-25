@@ -59,7 +59,7 @@ export const InterviewActions = () => {
 				<Button
 					onClick={() => {
 						actions
-							.updateInterview({ status: "INTERVIEWED" })
+							.updateInterview({ status: "COMPLETED" })
 							.then(data => history.push("/"))
 							.catch(error => setMessage({ label: "Unable to submit the interview", type: "danger" }));
 					}}
