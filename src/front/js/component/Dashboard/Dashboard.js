@@ -35,7 +35,7 @@ export const Dashboard = () => {
 		{ message: `Scheduled interviews`, link: "View all", callTo: "scheduled", stage: "POSTPONED" },
 		{ message: `Pending interviews`, link: "Start next Int.", callTo: "new", stage: "PENDING" },
 		{ message: `Unfinished`, link: "View all", callTo: "incomplete", stage: "DRAFT" },
-		{ message: `Finished Interviews`, link: "View All", callTo: "dealList", stage: "COMPLETED" }
+		{ message: `All Deals`, link: "View All", callTo: "dealList", stage: "COMPLETED" }
 	];
 
 	const handleStepClick = alert => {
