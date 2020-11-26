@@ -34,7 +34,7 @@ export const Dashboard = () => {
 	const steps = [
 		{ message: `Scheduled interviews`, link: "View all", callTo: "scheduled", stage: "POSTPONED" },
 		{ message: `Pending interviews`, link: "Start next Int.", callTo: "new", stage: "PENDING" },
-		{ message: `Unfinished`, link: "View all", callTo: "incomplete", stage: "DRAFT" },
+		{ message: `Unfinished Interviews`, link: "View all", callTo: "incomplete", stage: "DRAFT" },
 		{ message: `All Deals`, link: "View All", callTo: "dealList", stage: "COMPLETED" }
 	];
 
@@ -44,7 +44,9 @@ export const Dashboard = () => {
 		if (alert.callTo === "new")
 			actions
 				.redirectNextInterview({ status: "PENDING" })
-				.then(interview => history.push(`/deal/${interview.deal_id}`))
+				.then(interview => {
+					history.push(`/deal/${interview.deal_id}`);
+				})
 				.catch(error => setMessage({ label: error.message || error, type: "danger" }));
 		if (alert.callTo === "incomplete")
 			actions
