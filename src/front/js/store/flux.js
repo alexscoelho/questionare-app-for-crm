@@ -211,6 +211,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 				currentDeal;
 				setStore((store.currentDeal.activities = data));
 				return data;
+			},
+			pendingInterviews: () => {
+				const store = getStore();
+				const pendingInterviews = store.allDeals.filter(deal => deal.interview === []);
 			}
 		}
 	};

@@ -51,7 +51,7 @@ export const CommunicationStatus = () => {
 			else
 				actions
 					.startInterview(params.dealId, formData)
-					.then(data => history.push(`/`))
+					.then(interview => history.push("/"))
 					.catch(e => setFormStatus({ status: "danger", message: e.message }));
 		}
 	};
