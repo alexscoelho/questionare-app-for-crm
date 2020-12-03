@@ -208,7 +208,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						deal_id: dealId
 					})
 				});
-				currentDeal;
 				setStore((store.currentDeal.activities = data));
 				return data;
 			},

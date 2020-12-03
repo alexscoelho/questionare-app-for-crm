@@ -46,6 +46,9 @@ export const InterviewActions = () => {
 						displayTimeZone={store.agent.time_zone}
 						utc
 						onChange={dateTime => setDate(dateTime)}
+						timeConstraints={{
+							minutes: { step: 5 }
+						}}
 					/>
 					<Button style={{ marginRight: 5 }} onClick={handleSubmit}>
 						Send

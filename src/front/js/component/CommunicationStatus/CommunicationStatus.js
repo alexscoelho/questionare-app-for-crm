@@ -70,6 +70,9 @@ export const CommunicationStatus = () => {
 						displayTimeZone={store.agent.time_zone}
 						utc
 						onChange={dateTime => setFormData({ ...formData, dateTime })}
+						timeConstraints={{
+							minutes: { step: 5 }
+						}}
 					/>
 				</>
 			);

@@ -59,7 +59,7 @@ export const Dashboard = () => {
 			link: "View All",
 			callTo: "dealList",
 			stage: "COMPLETED",
-			lengthIdicator: interviews.length
+			lengthIdicator: 0
 		}
 	];
 
@@ -131,8 +131,8 @@ export const Dashboard = () => {
 							<Card.Body className="p-1">
 								<Card.Text>
 									<Badge className="mr-1" variant="secondary">
-										{s.lengthIdicator}
-										{/* {interviews[s.stage].length} */}
+										{/* {s.lengthIdicator} */}
+										{interviews[s.stage].length}
 									</Badge>
 									{s.message}
 								</Card.Text>
