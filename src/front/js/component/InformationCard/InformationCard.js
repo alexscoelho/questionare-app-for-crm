@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import "./InformationCard.scss";
 import moment from "moment";
 import { Context } from "../../store/appContext";
-import PropTypes from "prop-types";
 
 import { Card, Button, Alert, Popover } from "react-bootstrap/";
 
