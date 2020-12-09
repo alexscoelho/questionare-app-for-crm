@@ -3,6 +3,7 @@ import "./InformationCard.scss";
 import moment from "moment";
 import { Context } from "../../store/appContext";
 import PropTypes from "prop-types";
+
 import { Card, Button, Alert, Popover } from "react-bootstrap/";
 
 export const InformationCard = ({ deal, onAddNewNote, onDeleteNote }) => {
